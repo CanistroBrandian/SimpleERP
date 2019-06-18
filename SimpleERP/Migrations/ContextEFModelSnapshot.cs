@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SimpleERP.Models.Context;
 
-namespace SimpleERP.TphModel.CodeFirst.Migrations
+namespace SimpleERP.Migrations
 {
     [DbContext(typeof(ContextEF))]
-    [Migration("20190614115720_Initial_TPH_Migration")]
-    partial class Initial_TPH_Migration
+    partial class ContextEFModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,53 +19,17 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Client", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Clients");
-                });
-
             modelBuilder.Entity("SimpleERP.Models.Entities.Auth.ClientOrder", b =>
                 {
                     b.Property<int>("ClientId");
 
                     b.Property<int>("OrderId");
 
-                    b.Property<int>("Count");
-
                     b.HasKey("ClientId", "OrderId");
 
                     b.HasIndex("OrderId");
 
                     b.ToTable("ClientOrders");
-                });
-
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Employe", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ClientId");
-
-                    b.Property<int>("DepartamentId");
-
-                    b.Property<int?>("GoalId");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartamentId");
-
-                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("SimpleERP.Models.Entities.Auth.EmployeClient", b =>
@@ -100,17 +62,6 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                     b.ToTable("EmployeOrders");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Manager", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Managers");
-                });
-
             modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Role", b =>
                 {
                     b.Property<int>("RoleId")
@@ -132,6 +83,9 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
 
                     b.Property<string>("Adress");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
                     b.Property<string>("Login");
 
                     b.Property<string>("NameFirst");
@@ -142,11 +96,11 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
 
                     b.Property<string>("Phone");
 
-                    b.Property<int>("RoleId");
-
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
 
             modelBuilder.Entity("SimpleERP.Models.Entities.Auth.UserRole", b =>
@@ -187,7 +141,7 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Assigne");
+                    b.Property<int>("AssigneId");
 
                     b.Property<DateTime>("DateCreated");
 
@@ -197,24 +151,15 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Reported");
+                    b.Property<int>("ReporterId");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AssigneId");
+
+                    b.HasIndex("ReporterId");
+
                     b.ToTable("Goals");
-                });
-
-            modelBuilder.Entity("SimpleERP.Models.Entities.GoalEntity.GoalEmploye", b =>
-                {
-                    b.Property<int>("GoalId");
-
-                    b.Property<int>("EmployeId");
-
-                    b.HasKey("GoalId", "EmployeId");
-
-                    b.HasIndex("EmployeId");
-
-                    b.ToTable("GoalEmployes");
                 });
 
             modelBuilder.Entity("SimpleERP.Models.Entities.OrderEntity.Order", b =>
@@ -298,6 +243,39 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                     b.ToTable("Warehouses");
                 });
 
+            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Client", b =>
+                {
+                    b.HasBaseType("SimpleERP.Models.Entities.Auth.User");
+
+
+                    b.ToTable("Client");
+
+                    b.HasDiscriminator().HasValue("Client");
+                });
+
+            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Employe", b =>
+                {
+                    b.HasBaseType("SimpleERP.Models.Entities.Auth.User");
+
+                    b.Property<int>("DepartamentId");
+
+                    b.HasIndex("DepartamentId");
+
+                    b.ToTable("Employe");
+
+                    b.HasDiscriminator().HasValue("Employe");
+                });
+
+            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Manager", b =>
+                {
+                    b.HasBaseType("SimpleERP.Models.Entities.Auth.Employe");
+
+
+                    b.ToTable("Manager");
+
+                    b.HasDiscriminator().HasValue("Manager");
+                });
+
             modelBuilder.Entity("SimpleERP.Models.Entities.Auth.ClientOrder", b =>
                 {
                     b.HasOne("SimpleERP.Models.Entities.Auth.Client", "Client")
@@ -311,25 +289,17 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Employe", b =>
-                {
-                    b.HasOne("SimpleERP.Models.Entities.Departament", "Departament")
-                        .WithMany("Employees")
-                        .HasForeignKey("DepartamentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("SimpleERP.Models.Entities.Auth.EmployeClient", b =>
                 {
                     b.HasOne("SimpleERP.Models.Entities.Auth.Client", "Client")
                         .WithMany("EmployeClients")
                         .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SimpleERP.Models.Entities.Auth.Employe", "Employe")
                         .WithMany("EmployeClients")
                         .HasForeignKey("EmployeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SimpleERP.Models.Entities.OrderEntity.Order")
                         .WithMany("EmployeClients")
@@ -370,17 +340,17 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.GoalEntity.GoalEmploye", b =>
+            modelBuilder.Entity("SimpleERP.Models.Entities.GoalEntity.Goal", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.Auth.Employe", "Employe")
-                        .WithMany("GoalEmployes")
-                        .HasForeignKey("EmployeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("SimpleERP.Models.Entities.Auth.Employe", "Assigne")
+                        .WithMany("Goals")
+                        .HasForeignKey("AssigneId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("SimpleERP.Models.Entities.GoalEntity.Goal", "Goal")
-                        .WithMany("GoalEmployes")
-                        .HasForeignKey("GoalId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("SimpleERP.Models.Entities.Auth.Manager", "Reporter")
+                        .WithMany("CreatedGoals")
+                        .HasForeignKey("ReporterId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("SimpleERP.Models.Entities.OrderEntity.OrderProduct", b =>
@@ -406,6 +376,14 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                     b.HasOne("SimpleERP.Models.Entities.WarehouseEntity.Warehouse", "Warehouse")
                         .WithMany("Products")
                         .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Employe", b =>
+                {
+                    b.HasOne("SimpleERP.Models.Entities.Departament", "Departament")
+                        .WithMany("Employees")
+                        .HasForeignKey("DepartamentId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

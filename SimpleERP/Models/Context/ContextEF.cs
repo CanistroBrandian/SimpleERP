@@ -11,7 +11,7 @@ namespace SimpleERP.Models.Context
     {
         public ContextEF(DbContextOptions<ContextEF> options) : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -20,7 +20,6 @@ namespace SimpleERP.Models.Context
             modelBuilder.Entity<EmployeClient>().HasKey(ec => new { ec.ClientId, ec.EmployeId });
             modelBuilder.Entity<EmployeOrder>().HasKey(eo => new { eo.OrderId, eo.EmployeId });
             modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
-            modelBuilder.Entity<GoalEmploye>().HasKey(ge => new { ge.GoalId, ge.EmployeId });
             modelBuilder.Entity<OrderProduct>().HasKey(op => new { op.OrderId, op.ProductId });
             modelBuilder.Entity<Stock>().HasKey(s => new { s.WarehouseId, s.ProductId });
 
@@ -44,6 +43,28 @@ namespace SimpleERP.Models.Context
                 HasOne<Client>(o => o.Client).
                 WithMany(em => em.EmployeClients).
                 HasForeignKey(c => c.ClientId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Goal>()
+                .HasOne(f => f.Reporter)
+                .WithMany(f => f.CreatedGoals)
+                .HasForeignKey(f => f.ReporterId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Goal>()
+                .HasOne(f => f.Assigne)
+                .WithMany(f => f.Goals)
+                .HasForeignKey(f => f.AssigneId)
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Manager>()
+                .HasMany(f => f.CreatedGoals)
+                .WithOne(f => f.Reporter)
+                .IsRequired()
+                .HasForeignKey(f => f.ReporterId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Employe>()
+                .HasMany(f => f.Goals)
+                .WithOne(f => f.Assigne)
+                .IsRequired()
+                .HasForeignKey(f => f.AssigneId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
         public DbSet<Client> Clients { get; set; }
@@ -62,6 +83,5 @@ namespace SimpleERP.Models.Context
         public DbSet<Stock> Stocks { get; set; }
         public DbSet<Departament> Departmaentes { get; set; }
         public DbSet<Goal> Goals { get; set; }
-        public DbSet<GoalEmploye> GoalEmployes { get; set; }
     }
 }

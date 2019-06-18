@@ -2,55 +2,12 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace SimpleERP.TphModel.CodeFirst.Migrations
+namespace SimpleERP.Migrations
 {
-    public partial class Initial_TPH_Migration : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Clients",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clients", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Goals",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateFinished = table.Column<DateTime>(nullable: false),
-                    Reported = table.Column<string>(nullable: true),
-                    Assigne = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Goals", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Managers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Managers", x => x.Id);
-                });
-
             migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
@@ -97,25 +54,6 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<int>(nullable: false),
-                    Login = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true),
-                    NameFirst = table.Column<string>(nullable: true),
-                    NameLast = table.Column<string>(nullable: true),
-                    Adress = table.Column<string>(nullable: true),
-                    Phone = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Warehouses",
                 columns: table => new
                 {
@@ -127,31 +65,6 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Warehouses", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ClientOrders",
-                columns: table => new
-                {
-                    OrderId = table.Column<int>(nullable: false),
-                    ClientId = table.Column<int>(nullable: false),
-                    Count = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClientOrders", x => new { x.ClientId, x.OrderId });
-                    table.ForeignKey(
-                        name: "FK_ClientOrders_Clients_ClientId",
-                        column: x => x.ClientId,
-                        principalTable: "Clients",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ClientOrders_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -174,30 +87,6 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                         name: "FK_OrderProducts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserRoles",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(nullable: false),
-                    RoleId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
-                    table.ForeignKey(
-                        name: "FK_UserRoles_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "RoleId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserRoles_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -249,23 +138,51 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employees",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<int>(nullable: false),
-                    DepartamentId = table.Column<int>(nullable: false),
-                    ClientId = table.Column<int>(nullable: false),
-                    GoalId = table.Column<int>(nullable: true)
+                    Login = table.Column<string>(nullable: true),
+                    Password = table.Column<string>(nullable: true),
+                    NameFirst = table.Column<string>(nullable: true),
+                    NameLast = table.Column<string>(nullable: true),
+                    Adress = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: true),
+                    Discriminator = table.Column<string>(nullable: false),
+                    DepartamentId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Employees_Departmaentes_DepartamentId",
+                        name: "FK_Users_Departmaentes_DepartamentId",
                         column: x => x.DepartamentId,
                         principalTable: "Departmaentes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ClientOrders",
+                columns: table => new
+                {
+                    OrderId = table.Column<int>(nullable: false),
+                    ClientId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClientOrders", x => new { x.ClientId, x.OrderId });
+                    table.ForeignKey(
+                        name: "FK_ClientOrders_Users_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClientOrders_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -282,17 +199,17 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 {
                     table.PrimaryKey("PK_EmployeClients", x => new { x.ClientId, x.EmployeId });
                     table.ForeignKey(
-                        name: "FK_EmployeClients_Clients_ClientId",
+                        name: "FK_EmployeClients_Users_ClientId",
                         column: x => x.ClientId,
-                        principalTable: "Clients",
+                        principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_EmployeClients_Employees_EmployeId",
+                        name: "FK_EmployeClients_Users_EmployeId",
                         column: x => x.EmployeId,
-                        principalTable: "Employees",
+                        principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_EmployeClients_Orders_OrderId",
                         column: x => x.OrderId,
@@ -312,9 +229,9 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 {
                     table.PrimaryKey("PK_EmployeOrders", x => new { x.OrderId, x.EmployeId });
                     table.ForeignKey(
-                        name: "FK_EmployeOrders_Employees_EmployeId",
+                        name: "FK_EmployeOrders_Users_EmployeId",
                         column: x => x.EmployeId,
-                        principalTable: "Employees",
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -326,25 +243,55 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GoalEmployes",
+                name: "Goals",
                 columns: table => new
                 {
-                    GoalId = table.Column<int>(nullable: false),
-                    EmployeId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    DateFinished = table.Column<DateTime>(nullable: false),
+                    AssigneId = table.Column<int>(nullable: false),
+                    ReporterId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GoalEmployes", x => new { x.GoalId, x.EmployeId });
+                    table.PrimaryKey("PK_Goals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GoalEmployes_Employees_EmployeId",
-                        column: x => x.EmployeId,
-                        principalTable: "Employees",
+                        name: "FK_Goals_Users_AssigneId",
+                        column: x => x.AssigneId,
+                        principalTable: "Users",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Goals_Users_ReporterId",
+                        column: x => x.ReporterId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(nullable: false),
+                    RoleId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_UserRoles_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "RoleId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GoalEmployes_Goals_GoalId",
-                        column: x => x.GoalId,
-                        principalTable: "Goals",
+                        name: "FK_UserRoles_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -370,19 +317,19 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_DepartamentId",
-                table: "Employees",
-                column: "DepartamentId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_EmployeOrders_EmployeId",
                 table: "EmployeOrders",
                 column: "EmployeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GoalEmployes_EmployeId",
-                table: "GoalEmployes",
-                column: "EmployeId");
+                name: "IX_Goals_AssigneId",
+                table: "Goals",
+                column: "AssigneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Goals_ReporterId",
+                table: "Goals",
+                column: "ReporterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderProducts_ProductId",
@@ -398,6 +345,11 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 name: "IX_UserRoles_RoleId",
                 table: "UserRoles",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_DepartamentId",
+                table: "Users",
+                column: "DepartamentId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -412,10 +364,7 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
                 name: "EmployeOrders");
 
             migrationBuilder.DropTable(
-                name: "GoalEmployes");
-
-            migrationBuilder.DropTable(
-                name: "Managers");
+                name: "Goals");
 
             migrationBuilder.DropTable(
                 name: "OrderProducts");
@@ -425,15 +374,6 @@ namespace SimpleERP.TphModel.CodeFirst.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
-
-            migrationBuilder.DropTable(
-                name: "Clients");
-
-            migrationBuilder.DropTable(
-                name: "Employees");
-
-            migrationBuilder.DropTable(
-                name: "Goals");
 
             migrationBuilder.DropTable(
                 name: "Orders");

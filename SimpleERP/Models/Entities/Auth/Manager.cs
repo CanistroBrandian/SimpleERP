@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SimpleERP.Models.Entities.Auth
 {
 
-    public class Manager : User
+    public class Manager : Employe
     {
         public List<Goal> CreatedGoals { get; set; }
     }
