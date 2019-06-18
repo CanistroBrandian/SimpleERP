@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleERP.Models.Entities.Auth;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,10 +14,10 @@ namespace SimpleERP.Models.Entities.GoalEntity
         public string Description { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateFinished { get; set; }
-        public string Reported { get; set; }
-        public string Assigne { get; set; }
-        public List<GoalEmploye> GoalEmployes { get; set; }
-
-
+        public Employe Assigne { get; set; }
+        public int AssigneId { get; set; }
+        public Manager Reporter { get; set; }
+        public int ReporterId { get; set; }
+        
     }
 }
