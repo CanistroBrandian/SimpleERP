@@ -65,7 +65,12 @@ namespace SimpleERP.Models.Context
                 .IsRequired()
                 .HasForeignKey(f => f.AssigneId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>()
+            .HasDiscriminator<string>("Discriminator");
         }
+
+      
 
         public DbSet<Client> Clients { get; set; }
         public DbSet<ClientOrder> ClientOrders { get; set; }
@@ -81,7 +86,7 @@ namespace SimpleERP.Models.Context
         public DbSet<Product> Products { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Stock> Stocks { get; set; }
-        public DbSet<Departament> Departmaentes { get; set; }
+        public DbSet<Departament> Departaments { get; set; }
         public DbSet<Goal> Goals { get; set; }
     }
 }

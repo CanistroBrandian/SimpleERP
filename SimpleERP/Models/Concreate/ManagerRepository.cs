@@ -16,9 +16,17 @@ namespace SimpleERP.Models.Concreate
             _context = context;
         }
 
+        public Manager AddManager(Manager manager)
+        {
+            _context.Add(manager);
+            _context.SaveChanges();
+            return manager;
+        }
+
         public List<Manager> GetManagers()
         {
             return _context.Managers.ToList();
         }
+
     }
 }

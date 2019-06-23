@@ -9,5 +9,6 @@ namespace SimpleERP.Models.Abstract
    public interface IEmployeRepository
     {
         List<Employe> GetEmployes();
+        Employe AddEmployee(Employe employe);
     }
 }

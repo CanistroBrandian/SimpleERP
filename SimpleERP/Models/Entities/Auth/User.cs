@@ -15,5 +15,6 @@ namespace SimpleERP.Models.Entities.Auth
         public string NameLast { get; set; }
         public string Adress { get; set; }
         public string Phone { get; set; }
+        public string Discriminator { get; set; } 
     }
 }

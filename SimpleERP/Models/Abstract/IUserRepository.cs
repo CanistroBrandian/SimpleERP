@@ -9,5 +9,6 @@ namespace SimpleERP.Models.Abstract
    public interface IUserRepository
     {
         List<User> GetUsers();
+         User AddUser(User user);
     }
 }
