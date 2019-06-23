@@ -15,9 +15,9 @@ namespace SimpleERP.Models.Entities.GoalEntity
         public DateTime DateCreated { get; set; }
         public DateTime DateFinished { get; set; }
         public Employe Assigne { get; set; }
-        public int AssigneId { get; set; }
+        public string AssigneId { get; set; }
         public Manager Reporter { get; set; }
-        public int ReporterId { get; set; }
+        public string ReporterId { get; set; }
         
     }
 }

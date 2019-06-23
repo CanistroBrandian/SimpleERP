@@ -7,9 +7,9 @@ namespace SimpleERP.Models.Entities.Auth
 {
     public class EmployeClient
     {
-        public int EmployeId { get; set; }
+        public string EmployeId { get; set; }
         public Employe Employe { get; set; }
-        public int ClientId { get; set; }
+        public string ClientId { get; set; }
         public Client Client { get; set; }
     }
 }

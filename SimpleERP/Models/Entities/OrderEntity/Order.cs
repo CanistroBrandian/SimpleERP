@@ -11,9 +11,9 @@ namespace SimpleERP.Models.Entities.OrderEntity
     {
         public int Id { get; set; }
         public bool Status { get; set; }
-        public int ClientId { get; set; }
+        public string ClientId { get; set; }
         public List<ClientOrder> ClientOrders { get; set; }
-        public int EmployeId { get; set; }
+        public string EmployeId { get; set; }
         public List<EmployeClient> EmployeClients { get; set; }
         public int ProductId { get; set; }
         public List<OrderProduct> OrderProducts { get; set; }

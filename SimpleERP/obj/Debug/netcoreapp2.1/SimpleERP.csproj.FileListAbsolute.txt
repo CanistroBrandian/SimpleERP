@@ -29,3 +29,5 @@ C:\Users\brovk\source\repos\SimpleERP\SimpleERP\bin\Debug\netcoreapp2.1\SimpleER
 C:\Users\brovk\source\repos\SimpleERP\SimpleERP\bin\Debug\netcoreapp2.1\SimpleERP.Views.pdb
 C:\Users\brovk\source\repos\SimpleERP\SimpleERP\obj\Debug\netcoreapp2.1\SimpleERP.Views.pdb
 C:\Users\brovk\source\repos\SimpleERP\SimpleERP\obj\Debug\netcoreapp2.1\SimpleERP.csproj.CopyComplete
+C:\Users\brovk\source\repos\SimpleERP\SimpleERP\obj\Debug\netcoreapp2.1\Razor\Views\Account\Register.g.cshtml.cs
+C:\Users\brovk\source\repos\SimpleERP\SimpleERP\obj\Debug\netcoreapp2.1\Razor\Views\Account\Login.g.cshtml.cs

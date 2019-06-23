@@ -22,7 +22,7 @@ namespace SimpleERP.Controllers
         {
             Employe employe = new Employe
             {
-                Id = 2,
+               
                 NameFirst = "Bob",
                 NameLast = "Niohert",
                 Phone = "375214885",
@@ -54,21 +54,13 @@ namespace SimpleERP.Controllers
             };
 
 
-            Goal goal = new Goal
-            {
-                Name = "we will win",
-                Description = "lba bla bal",
-                DateCreated = new DateTime(1018, 10, 15),
-                DateFinished = new DateTime(1018, 10, 15),
-                AssigneId = 4,
-                ReporterId = 3
-            };
+    
 
-            _context.Goals.Add(goal);
+           // _context.Goals.Add(goal);
 
             //   _context.Managers.Add(manager);
             //    _context.Users.Add(user);
-            _context.SaveChanges();
+            //_context.SaveChanges();
             return View();
         }
 
