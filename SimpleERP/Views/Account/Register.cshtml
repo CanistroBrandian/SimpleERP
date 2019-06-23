@@ -1,50 +1,61 @@
-﻿@model SimpleERP.Models.ViewModels.RegisterViewModel
+﻿@using SimpleERP.Models.Entities.Auth
+@model SimpleERP.Models.ViewModels.RegisterViewModel
 
-    <h2>Регистрация нового пользователя</h2>
-    <form method="post" asp-controller="Account" asp-action="Register">
-        <div asp-validation-summary="ModelOnly"></div>
-        <div>
-            <label asp-for="Login"></label><br />
-            <input asp-for="Login" />
-            <span asp-validation-for="Login"></span>
-        </div>
-        <div>
-            <label asp-for="Email"></label><br />
-            <input asp-for="Email" />
-            <span asp-validation-for="Email"></span>
-        </div>
-        <div>
-            <label asp-for="NameFirst"></label><br />
-            <input asp-for="NameFirst" />
-            <span asp-validation-for="NameFirst"></span>
-        </div>
-        <div>
-            <label asp-for="NameLast"></label><br />
-            <input asp-for="NameLast" />
-            <span asp-validation-for="NameLast"></span>
-        </div>
-        <div>
-            <label asp-for="Phone"></label><br />
-            <input asp-for="Phone" />
-            <span asp-validation-for="Phone"></span>
-        </div>
-        <div>
-            <label asp-for="Adress"></label><br />
-            <input asp-for="Adress" />
-            <span asp-validation-for="Adress"></span>
-        </div>
+<h2>Регистрация нового пользователя</h2>
+<form method="post" asp-controller="Account" asp-action="Register">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div>
+        <label asp-for="Login"></label><br />
+        <input asp-for="Login" />
+        <span asp-validation-for="Login"></span>
+    </div>
+    <div>
+        <label asp-for="Email"></label><br />
+        <input asp-for="Email" />
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div>
+        <label asp-for="NameFirst"></label><br />
+        <input asp-for="NameFirst" />
+        <span asp-validation-for="NameFirst"></span>
+    </div>
+    <div>
+        <label asp-for="NameLast"></label><br />
+        <input asp-for="NameLast" />
+        <span asp-validation-for="NameLast"></span>
+    </div>
+    <div>
+        <label asp-for="Phone"></label><br />
+        <input asp-for="Phone" />
+        <span asp-validation-for="Phone"></span>
+    </div>
+    <div>
+        <label asp-for="Adress"></label><br />
+        <input asp-for="Adress" />
+        <span asp-validation-for="Adress"></span>
+    </div>
 
-        <div>
-            <label asp-for="Password"></label><br />
-            <input asp-for="Password" />
-            <span asp-validation-for="Password"></span>
-        </div>
-        <div>
-            <label asp-for="PasswordConfirm"></label><br />
-            <input asp-for="PasswordConfirm" />
-            <span asp-validation-for="PasswordConfirm"></span>
-        </div>
-        <div>
-            <input type="submit" value="Регистрация" />
-        </div>
-    </form>
+    <div>
+        <label asp-for="Password"></label><br />
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <label asp-for="PasswordConfirm"></label><br />
+        <input asp-for="PasswordConfirm" />
+        <span asp-validation-for="PasswordConfirm"></span>
+    </div>
+    <div>
+        @{
+            var selectList = new List<Type> { typeof(Manager), typeof(Employe), typeof(Client) }.Select(f => new SelectListItem { Text = f.Name, Value = f.Name }).ToList();
+        }
+        <label asp-for="Type"></label><br />
+        <select asp-for="Type" asp-items="selectList">
+            <option value="">Выберите</option>
+        </select>
+        <span asp-validation-for="Type"></span>
+    </div>
+    <div>
+        <input type="submit" value="Регистрация" />
+    </div>
+</form>

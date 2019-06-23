@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using SimpleERP.Helpers;
+using SimpleERP.Models.Entities.Auth;
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
-using SimpleERP.Models.Entities.Auth;
-using SimpleERP.Tokens;
 
 namespace SimpleERP.Controllers.API
 {
@@ -19,10 +18,14 @@ namespace SimpleERP.Controllers.API
     public class APITokenController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public APITokenController(UserManager<User> userManager)
+        public APITokenController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         [HttpPost]
@@ -37,23 +40,15 @@ namespace SimpleERP.Controllers.API
                 return BadRequest("Invalid username or password.");
             }
 
-            var now = DateTime.UtcNow;
-            // создаем JWT-токен
-            var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
-                    notBefore: now,
-                    claims: identity.Claims,
-                    expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey()
-                    , SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            var jwt = AuthHelper.GetJWT(identity);
+            var encodedJwt = AuthHelper.EncodeJWT(jwt);
 
             var response = new
             {
                 access_token = encodedJwt,
                 username = identity.Name
             };
+
             return Ok(response);
         }
 
@@ -69,14 +64,10 @@ namespace SimpleERP.Controllers.API
             {
                 return null;
             }
-            var claims = new List<Claim>
-                {
-                    new Claim(ClaimsIdentity.DefaultNameClaimType, user.UserName)
-                };
-            ClaimsIdentity claimsIdentity =
-            new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
-                ClaimsIdentity.DefaultRoleClaimType);
-            return claimsIdentity;
+
+            var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
+        
+            return claimsPrincipal?.Identity as ClaimsIdentity;
         }
 
     }

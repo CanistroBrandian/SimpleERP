@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleERP.Models.Entities.Auth;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.ViewModels
 {
-    public class RegisterViewModel
+    public class RegisterViewModel : IValidatableObject
     {
         [Required]
         [Display(Name = "Имя")]
@@ -43,6 +44,23 @@ namespace SimpleERP.Models.ViewModels
         [Display(Name = "Подтвердить пароль")]
         public string PasswordConfirm { get; set; }
 
+        [Required]
+        [Display(Name = "Тип")]
+        public string Type { get; set; }
+
+        public int? DepartmentId { get; set; }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!new List<string> { nameof(Employe), nameof(Manager), nameof(Client) }.Any(s => s == Type))
+            {
+                yield return new ValidationResult("Выберите тип регистрации из списка", new[] { nameof(Type) });
+            }
+            else if (new List<string> { nameof(Employe), nameof(Manager) }.Any(s => s == Type) && !DepartmentId.HasValue)
+            {
+                yield return new ValidationResult($"Если вы {nameof(Manager)} или {nameof(Employe)}, вы должны выбрать {nameof(DepartmentId)}", new[] { nameof(Type) });
+            }
+        }
 
     }
 }

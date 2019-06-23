@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SimpleERP.Models.Abstract;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities;
@@ -6,6 +9,7 @@ using SimpleERP.Models.Entities.Auth;
 using SimpleERP.Models.Entities.GoalEntity;
 using SimpleERP.Models.Entities.WarehouseEntity;
 using System;
+using System.Threading.Tasks;
 
 namespace SimpleERP.Controllers
 {
@@ -18,11 +22,12 @@ namespace SimpleERP.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index()
         {
             Employe employe = new Employe
             {
-               
+
                 NameFirst = "Bob",
                 NameLast = "Niohert",
                 Phone = "375214885",
@@ -54,9 +59,9 @@ namespace SimpleERP.Controllers
             };
 
 
-    
 
-           // _context.Goals.Add(goal);
+
+            // _context.Goals.Add(goal);
 
             //   _context.Managers.Add(manager);
             //    _context.Users.Add(user);

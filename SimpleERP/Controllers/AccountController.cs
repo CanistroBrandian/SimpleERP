@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using SimpleERP.Models.Entities.Auth;
 using SimpleERP.Models.ViewModels;
-using SimpleERP.Tokens;
-using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -35,36 +31,53 @@ namespace SimpleERP.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                User user = new User
+                return View(model);
+            };
+            User user = null;
+            if (model.Type == nameof(Manager))
+            {
+                user = new Manager
                 {
-                    NameFirst = model.NameFirst
-                    ,
-                    NameLast = model.NameLast
-                    ,
-                    Login = model.Login
-                    ,
-                    Password = model.Password
-                    ,
-                    Phone = model.Phone
-                    ,
-                    Adress = model.Adress,
-
-                    UserName= model.Email
+                    DepartamentId = model.DepartmentId.Value
                 };
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+
+            }
+            else if (model.Type == nameof(Employe))
+            {
+                user = new Employe
                 {
-                    await _signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
-                }
-                else
+                    DepartamentId = model.DepartmentId.Value
+                };
+            }
+            else if (model.Type == nameof(Client))
+            {
+                user = new Client();
+            }
+
+            user.NameFirst = model.NameFirst;
+            user.NameLast = model.NameLast;
+            user.Login = model.Login;
+            user.Password = model.Password;
+            user.Phone = model.Phone;
+            user.Adress = model.Adress;
+            user.UserName = model.Email;
+            user.Email = model.Email;
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
+
+                await _signInManager.Context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = false });
+
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                foreach (var error in result.Errors)
                 {
-                    foreach (var error in result.Errors)
-                    {
-                        ModelState.AddModelError(string.Empty, error.Description);
-                    }
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
             return View(model);
@@ -80,28 +93,29 @@ namespace SimpleERP.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var result =
-                    await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
-                if (result.Succeeded)
-                {
-                    // проверяем, принадлежит ли URL приложению
-                    if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
-                    {
-                        return Redirect(model.ReturnUrl);
-                    }
-                    else
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Неправильный логин и (или) пароль");
-                }
+                return View(model);
             }
-            return View(model);
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+            {
+                ModelState.AddModelError("", "Неправильный логин и (или) пароль");
+                return View(model);
+            }
+
+            var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
+
+            await _signInManager.Context.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties { IsPersistent = model.RememberMe });
+
+            if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
+            {
+                return Redirect(model.ReturnUrl);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
         }
 
         [HttpPost]
@@ -109,7 +123,7 @@ namespace SimpleERP.Controllers
         public async Task<IActionResult> LogOff()
         {
             // удаляем аутентификационные куки
-            await _signInManager.SignOutAsync();
+            await _signInManager.Context.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
     }
