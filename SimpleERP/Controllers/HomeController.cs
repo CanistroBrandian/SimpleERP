@@ -23,73 +23,7 @@ namespace SimpleERP.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
-        {
-            Employe employe = new Employe
-            {
-
-                NameFirst = "Bob",
-                NameLast = "Niohert",
-                Phone = "375214885",
-                Adress = "ul.malinia",
-                Login = "Login",
-                Password = "Pass",
-                DepartamentId = 8
-            };
-
-            Manager manager = new Manager
-            {
-                NameFirst = "Bob",
-                NameLast = "Niohert",
-                Phone = "375214885",
-                Adress = "ul.malinia",
-                Login = "Login",
-                Password = "Pass",
-                DepartamentId = 8
-            };
-            User user = new User
-            {
-                NameFirst = "Bob",
-                NameLast = "Niohert",
-                Phone = "375214885",
-                Adress = "ul.malinia",
-                Login = "Login",
-                Password = "Pass",
-
-            };
-
-
-
-
-            // _context.Goals.Add(goal);
-
-            //   _context.Managers.Add(manager);
-            //    _context.Users.Add(user);
-            //_context.SaveChanges();
-            return View();
-        }
-
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Index()
         {
             return View();
         }

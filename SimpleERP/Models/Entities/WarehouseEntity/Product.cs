@@ -12,7 +12,6 @@ namespace SimpleERP.Models.Entities.WarehouseEntity
         public string Name { get; set; }
         public string Description { get; set; }
         public List<Stock> Stocks { get; set; }
-        public int OrderId { get; set; }
         public List<OrderProduct> OrderProducts { get; set; }
     }
 }
