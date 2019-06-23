@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SimpleERP.Models.Entities;
 using SimpleERP.Models.Entities.Auth;
 using SimpleERP.Models.Entities.GoalEntity;
@@ -7,19 +8,21 @@ using SimpleERP.Models.Entities.WarehouseEntity;
 
 namespace SimpleERP.Models.Context
 {
-    public class ContextEF : DbContext
+    public class ContextEF : IdentityDbContext<User>
     {
         public ContextEF(DbContextOptions<ContextEF> options) : base(options)
         {
-            //Database.EnsureCreated();
+            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+
             modelBuilder.Entity<ClientOrder>().HasKey(sc => new { sc.ClientId, sc.OrderId });
             modelBuilder.Entity<EmployeClient>().HasKey(ec => new { ec.ClientId, ec.EmployeId });
             modelBuilder.Entity<EmployeOrder>().HasKey(eo => new { eo.OrderId, eo.EmployeId });
-            modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
             modelBuilder.Entity<OrderProduct>().HasKey(op => new { op.OrderId, op.ProductId });
             modelBuilder.Entity<Stock>().HasKey(s => new { s.WarehouseId, s.ProductId });
 
@@ -65,7 +68,11 @@ namespace SimpleERP.Models.Context
                 .IsRequired()
                 .HasForeignKey(f => f.AssigneId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>();
         }
+
+      
 
         public DbSet<Client> Clients { get; set; }
         public DbSet<ClientOrder> ClientOrders { get; set; }
@@ -73,15 +80,12 @@ namespace SimpleERP.Models.Context
         public DbSet<EmployeClient> EmployeClients { get; set; }
         public DbSet<EmployeOrder> EmployeOrders { get; set; }
         public DbSet<Manager> Managers { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Warehouse> Warehouses { get; set; }
         public DbSet<Stock> Stocks { get; set; }
-        public DbSet<Departament> Departmaentes { get; set; }
+        public DbSet<Departament> Departaments { get; set; }
         public DbSet<Goal> Goals { get; set; }
     }
 }

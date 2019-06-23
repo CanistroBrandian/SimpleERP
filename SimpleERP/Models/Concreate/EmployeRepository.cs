@@ -16,9 +16,17 @@ namespace SimpleERP.Models.Concreate
             _context = context;
         }
 
+        public Employe AddEmployee(Employe employe)
+        {
+            _context.Employees.Add(employe);
+            _context.SaveChanges();
+            return employe;
+        }
+
         public List<Employe> GetEmployes()
         {
             return _context.Employees.ToList();
         }
+
     }
 }

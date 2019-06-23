@@ -13,7 +13,7 @@ namespace SimpleERP.Models.Entities
         public string Name { get; set; }
         public int WarehouseId { get; set; }
         public Warehouse Warehouse { get; set; }
-        public int EmployeId  { get; set; }
+//        public int EmployeId  { get; set; }
         public List<Employe> Employees { get; set; }
 
 

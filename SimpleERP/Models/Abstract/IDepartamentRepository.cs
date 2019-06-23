@@ -9,5 +9,6 @@ namespace SimpleERP.Models.Abstract
    public interface IDepartamentRepository
     {
         List<Departament> GetDepartaments();
+        Departament AddDepartamnet(Departament departament);
     }
 }

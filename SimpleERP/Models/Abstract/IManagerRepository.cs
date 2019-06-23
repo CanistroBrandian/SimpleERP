@@ -9,5 +9,6 @@ namespace SimpleERP.Models.Abstract
    public interface IManagerRepository
     {
         List<Manager> GetManagers();
+        Manager AddManager(Manager manager);
     }
 }

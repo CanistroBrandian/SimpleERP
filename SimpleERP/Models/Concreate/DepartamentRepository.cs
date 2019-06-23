@@ -16,9 +16,16 @@ namespace SimpleERP.Models.Concreate
             _context = context;
         }
 
+        public Departament AddDepartamnet(Departament departament)
+        {
+            _context.Departaments.Add(departament);
+            _context.SaveChanges();
+            return departament;
+        }
+
         public List<Departament> GetDepartaments()
         {
-            return _context.Departmaentes.ToList();
+            return _context.Departaments.ToList();
         }
     }
 }
