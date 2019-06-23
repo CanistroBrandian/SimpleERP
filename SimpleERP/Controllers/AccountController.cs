@@ -58,8 +58,6 @@ namespace SimpleERP.Controllers
 
             user.NameFirst = model.NameFirst;
             user.NameLast = model.NameLast;
-            user.Login = model.Login;
-            user.Password = model.Password;
             user.Phone = model.Phone;
             user.Adress = model.Adress;
             user.UserName = model.Email;

@@ -17,8 +17,6 @@ namespace SimpleERP
                 NameLast = "Niohert",
                 Phone = "375214885",
                 Adress = "ul.malinia",
-                Login = "Login",
-                Password = "Pass",
                 DepartamentId = 5
             };
             context.Employees.Add(employe);

@@ -28,11 +28,6 @@ namespace SimpleERP.Models.ViewModels
         [Required]
         [Display(Name = "Телефон")]
         public string Phone { get; set; }
-
-        [Required]
-        [Display(Name = "Имя пользователя")]
-        public string Login { get; set; }
-
         [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]

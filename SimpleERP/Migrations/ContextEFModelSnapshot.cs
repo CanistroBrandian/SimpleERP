@@ -148,13 +148,9 @@ namespace SimpleERP.Migrations
 
                     b.Property<string>("EmployeId");
 
-                    b.Property<int?>("OrderId");
-
                     b.HasKey("ClientId", "EmployeId");
 
                     b.HasIndex("EmployeId");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("EmployeClients");
                 });
@@ -196,8 +192,6 @@ namespace SimpleERP.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
 
-                    b.Property<string>("Login");
-
                     b.Property<string>("NameFirst");
 
                     b.Property<string>("NameLast");
@@ -207,8 +201,6 @@ namespace SimpleERP.Migrations
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256);
-
-                    b.Property<string>("Password");
 
                     b.Property<string>("PasswordHash");
 
@@ -292,13 +284,7 @@ namespace SimpleERP.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ClientId");
-
-                    b.Property<string>("EmployeId");
-
                     b.Property<string>("Information");
-
-                    b.Property<int>("ProductId");
 
                     b.Property<bool>("Status");
 
@@ -330,8 +316,6 @@ namespace SimpleERP.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("OrderId");
-
                     b.HasKey("Id");
 
                     b.ToTable("Products");
@@ -357,8 +341,6 @@ namespace SimpleERP.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("DepartamentId");
 
                     b.Property<string>("Name");
 
@@ -469,10 +451,6 @@ namespace SimpleERP.Migrations
                         .WithMany("EmployeClients")
                         .HasForeignKey("EmployeId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("SimpleERP.Models.Entities.OrderEntity.Order")
-                        .WithMany("EmployeClients")
-                        .HasForeignKey("OrderId");
                 });
 
             modelBuilder.Entity("SimpleERP.Models.Entities.Auth.EmployeOrder", b =>
