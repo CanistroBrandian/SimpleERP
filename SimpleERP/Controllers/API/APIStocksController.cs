@@ -10,7 +10,7 @@ using SimpleERP.Models.Entities.WarehouseEntity;
 
 namespace SimpleERP.Controllers.API
 {
-    [Route("api/[controller]")]
+    [Route("api/stock")]
     [ApiController]
     public class APIStocksController : ControllerBase
     {

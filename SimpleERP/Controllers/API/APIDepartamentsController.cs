@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.API.Department;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities;
 
@@ -23,9 +24,14 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIDepartaments
         [HttpGet]
-        public IEnumerable<Departament> GetDepartaments()
+        public async Task<IActionResult> GetDepartaments()
         {
-            return _context.Departaments;
+            return Ok(await _context.Departaments.Select(s => new DepartmentModel
+            {
+                WarehouseId = s.WarehouseId,
+                Name = s.Name,
+                Id = s.Id
+            }).ToListAsync());
         }
 
         // GET: api/APIDepartaments/5
@@ -44,17 +50,29 @@ namespace SimpleERP.Controllers.API
                 return NotFound();
             }
 
-            return Ok(departament);
+            return Ok(new Departament
+            {
+                Name = departament.Name,
+                WarehouseId = departament.WarehouseId,
+                Id = departament.Id
+            });
         }
 
         // PUT: api/APIDepartaments/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartament([FromRoute] int id, [FromBody] Departament departament)
+        public async Task<IActionResult> PutDepartament([FromRoute] int id, [FromBody] DepartmentModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            var departament = new Departament
+            {
+                Name = model.Name,
+                WarehouseId = model.WarehouseId,
+                Id = model.Id
+            };
 
             if (id != departament.Id)
             {
@@ -84,13 +102,17 @@ namespace SimpleERP.Controllers.API
 
         // POST: api/APIDepartaments
         [HttpPost]
-        public async Task<IActionResult> PostDepartament([FromBody] Departament departament)
+        public async Task<IActionResult> PostDepartament([FromBody] DepartmentModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            var departament = new Departament
+            {
+                Name = model.Name,
+                WarehouseId = model.WarehouseId,
+            };
             _context.Departaments.Add(departament);
             await _context.SaveChangesAsync();
 
