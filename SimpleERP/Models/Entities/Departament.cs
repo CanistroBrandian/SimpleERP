@@ -1,4 +1,5 @@
-﻿using SimpleERP.Models.Entities.Auth;
+﻿using SimpleERP.Models.Abstract;
+using SimpleERP.Models.Entities.Auth;
 using SimpleERP.Models.Entities.WarehouseEntity;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Entities
 {
-    public class Departament
+    public class Departament : IEntity<int>
     {
         public int Id { get; set; }
         public string Name { get; set; }

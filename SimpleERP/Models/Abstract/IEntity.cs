@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-   public interface ICommonRepository
+   public interface IEntity<T>
     {
-         List<T> GetAll();
-         
+        T Id { get; set; }
     }
 }
