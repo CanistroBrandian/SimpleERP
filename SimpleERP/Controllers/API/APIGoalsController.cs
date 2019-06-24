@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.API.Goal;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.GoalEntity;
 
@@ -23,9 +24,17 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIGoals
         [HttpGet]
-        public IEnumerable<Goal> GetGoals()
+        public async Task<ActionResult> GetGoals()
         {
-            return _context.Goals;
+            return Ok(await _context.Goals.Select(s => new Goal
+            {
+                Name = s.Name,
+                Description = s.Description,
+                AssigneId = s.AssigneId,
+                ReporterId = s.ReporterId,
+                DateCreated = s.DateCreated,
+                DateFinished = s.DateFinished
+            }).ToListAsync());
         }
 
         // GET: api/APIGoals/5
@@ -44,13 +53,31 @@ namespace SimpleERP.Controllers.API
                 return NotFound();
             }
 
-            return Ok(goal);
+            return Ok(new Goal
+            {
+                Name = goal.Name,
+                Description = goal.Description,
+                AssigneId = goal.AssigneId,
+                ReporterId = goal.ReporterId,
+                DateCreated = goal.DateCreated,
+                DateFinished = goal.DateFinished
+            });
         }
 
         // PUT: api/APIGoals/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGoal([FromRoute] int id, [FromBody] Goal goal)
+        public async Task<IActionResult> PutGoal([FromRoute] int id, [FromBody] GoalModel model)
         {
+            var goal = new Goal
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                AssigneId = model.AsignId,
+                ReporterId = model.ReporterId,
+                DateCreated = model.DateCreated,
+                DateFinished = model.DateFinished
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -84,8 +111,17 @@ namespace SimpleERP.Controllers.API
 
         // POST: api/APIGoals
         [HttpPost]
-        public async Task<IActionResult> PostGoal([FromBody] Goal goal)
+        public async Task<IActionResult> PostGoal([FromBody] GoalModel model)
         {
+            var goal = new Goal
+            {
+                Name = model.Name,
+                Description = model.Description,
+                AssigneId = model.AsignId,
+                ReporterId = model.ReporterId,
+                DateCreated = model.DateCreated,
+                DateFinished = model.DateFinished
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

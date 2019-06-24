@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.API.Employe;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.Auth;
 
@@ -23,15 +24,21 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIEmployeOrders
         [HttpGet]
-        public IEnumerable<EmployeOrder> GetEmployeOrders()
+        public async Task<IActionResult> GetEmployeOrders()
         {
-            return _context.EmployeOrders;
+            return Ok(await _context.EmployeOrders.Select(s => new EmployeOrder
+            {
+
+                EmployeId = s.EmployeId,
+                OrderId = s.OrderId
+            }).ToListAsync());
         }
 
         // GET: api/APIEmployeOrders/5
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployeOrder([FromRoute] int id)
         {
+           
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -44,13 +51,23 @@ namespace SimpleERP.Controllers.API
                 return NotFound();
             }
 
-            return Ok(employeOrder);
+            return Ok(new EmployeOrder
+            {
+
+                EmployeId = employeOrder.EmployeId,
+                OrderId = employeOrder.OrderId
+            });
         }
 
         // PUT: api/APIEmployeOrders/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployeOrder([FromRoute] int id, [FromBody] EmployeOrder employeOrder)
+        public async Task<IActionResult> PutEmployeOrder([FromRoute] int id, [FromBody] EmployeOrderModel model)
         {
+            var employeOrder = new EmployeOrder
+            {
+                EmployeId = model.EmployeId,
+                OrderId = model.OrderId
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -84,8 +101,13 @@ namespace SimpleERP.Controllers.API
 
         // POST: api/APIEmployeOrders
         [HttpPost]
-        public async Task<IActionResult> PostEmployeOrder([FromBody] EmployeOrder employeOrder)
+        public async Task<IActionResult> PostEmployeOrder([FromBody] EmployeOrderModel model)
         {
+            var employeOrder = new EmployeOrder
+            {
+                EmployeId = model.EmployeId,
+                OrderId = model.OrderId
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.API.Employe;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.Auth;
 
@@ -23,9 +24,13 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIEmployeClient
         [HttpGet]
-        public IEnumerable<EmployeClient> GetEmployeClients()
+        public async Task<IActionResult> GetEmployeClients()
         {
-            return _context.EmployeClients;
+            return Ok(await _context.EmployeClients.Select(s => new EmployeClient
+            {
+                ClientId = s.ClientId,
+                EmployeId = s.EmployeId
+            }).ToListAsync());
         }
 
         // GET: api/APIEmployeClient/5
@@ -44,18 +49,27 @@ namespace SimpleERP.Controllers.API
                 return NotFound();
             }
 
-            return Ok(employeClient);
+            return Ok( new EmployeClient
+            {
+                ClientId = employeClient.ClientId,
+                EmployeId = employeClient.EmployeId
+            });
         }
 
         // PUT: api/APIEmployeClient/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployeClient([FromRoute] string id, [FromBody] EmployeClient employeClient)
-        {
+        public async Task<IActionResult> PutEmployeClient([FromRoute] string id, [FromBody] EmployeClientModel model)
+        { 
+              var employeClient = new EmployeClient
+              {
+                  ClientId = model.ClientId,
+                  EmployeId = model.EmployeId
+              };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            
             if (id != employeClient.ClientId)
             {
                 return BadRequest();
@@ -84,13 +98,17 @@ namespace SimpleERP.Controllers.API
 
         // POST: api/APIEmployeClient
         [HttpPost]
-        public async Task<IActionResult> PostEmployeClient([FromBody] EmployeClient employeClient)
+        public async Task<IActionResult> PostEmployeClient([FromBody] EmployeClientModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
+            var employeClient = new EmployeClient
+            {
+                ClientId = model.ClientId,
+                EmployeId = model.EmployeId
+            };
             _context.EmployeClients.Add(employeClient);
             try
             {

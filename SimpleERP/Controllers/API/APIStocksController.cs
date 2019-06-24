@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.API.Warehouse;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.WarehouseEntity;
 
@@ -23,9 +24,13 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIStocks
         [HttpGet]
-        public IEnumerable<Stock> GetStocks()
+        public async Task<IActionResult> GetStocks()
         {
-            return _context.Stocks;
+            return Ok(await _context.Stocks.Select(s => new Stock
+            {
+                WarehouseId = s.WarehouseId,
+                ProductId = s.ProductId
+            }).ToListAsync());
         }
 
         // GET: api/APIStocks/5
@@ -44,13 +49,21 @@ namespace SimpleERP.Controllers.API
                 return NotFound();
             }
 
-            return Ok(stock);
+            return Ok(new Stock {
+                WarehouseId = stock.WarehouseId,
+                ProductId = stock.ProductId
+            });
         }
 
         // PUT: api/APIStocks/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutStock([FromRoute] int id, [FromBody] Stock stock)
+        public async Task<IActionResult> PutStock([FromRoute] int id, [FromBody] StockModel model)
         {
+            var stock = new Stock
+            {
+                WarehouseId = model.WarehouseId,
+                ProductId = model.ProductId
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -84,8 +97,13 @@ namespace SimpleERP.Controllers.API
 
         // POST: api/APIStocks
         [HttpPost]
-        public async Task<IActionResult> PostStock([FromBody] Stock stock)
+        public async Task<IActionResult> PostStock([FromBody] StockModel model)
         {
+            var stock = new Stock
+            {
+                ProductId = model.ProductId,
+                WarehouseId = model.WarehouseId
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

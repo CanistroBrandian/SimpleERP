@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.API.Order;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.OrderEntity;
 
 namespace SimpleERP.Controllers.API
 {
-    [Route("api/goal")]
+    [Route("api/orderproduct")]
     [ApiController]
     public class APIOrderProductsController : ControllerBase
     {
@@ -23,9 +24,13 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIOrderProducts
         [HttpGet]
-        public IEnumerable<OrderProduct> GetOrderProducts()
+        public async Task<IActionResult> GetOrderProducts()
         {
-            return _context.OrderProducts;
+            return Ok(await _context.OrderProducts.Select(s => new OrderProduct
+            {
+                OrderId = s.OrderId,
+                ProductId = s.ProductId
+            }).ToListAsync());
         }
 
         // GET: api/APIOrderProducts/5
@@ -44,13 +49,22 @@ namespace SimpleERP.Controllers.API
                 return NotFound();
             }
 
-            return Ok(orderProduct);
+            return Ok(new OrderProduct
+            {
+                OrderId = orderProduct.OrderId,
+                ProductId = orderProduct.ProductId
+            });
         }
 
         // PUT: api/APIOrderProducts/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrderProduct([FromRoute] int id, [FromBody] OrderProduct orderProduct)
+        public async Task<IActionResult> PutOrderProduct([FromRoute] int id, [FromBody] OrderProductModel model)
         {
+            var orderProduct = new OrderProduct
+            {
+                OrderId = model.OrderId,
+                ProductId = model.ProductId
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -84,8 +98,13 @@ namespace SimpleERP.Controllers.API
 
         // POST: api/APIOrderProducts
         [HttpPost]
-        public async Task<IActionResult> PostOrderProduct([FromBody] OrderProduct orderProduct)
+        public async Task<IActionResult> PostOrderProduct([FromBody] OrderProductModel model)
         {
+            var orderProduct = new OrderProduct
+            {
+                OrderId = model.OrderId,
+                ProductId = model.ProductId
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

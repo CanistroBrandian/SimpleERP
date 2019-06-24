@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.API.Warehouse;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.WarehouseEntity;
 
@@ -23,9 +24,12 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIWarehouses
         [HttpGet]
-        public IEnumerable<Warehouse> GetWarehouses()
+        public async Task<IActionResult> GetWarehouses()
         {
-            return _context.Warehouses;
+            return Ok(await _context.Warehouses.Select(s => new Warehouse {
+                Id = s.Id,
+                Name = s.Name
+            }).ToListAsync());
         }
 
         // GET: api/APIWarehouses/5
@@ -44,13 +48,21 @@ namespace SimpleERP.Controllers.API
                 return NotFound();
             }
 
-            return Ok(warehouse);
+            return Ok(new Warehouse {
+                Id = warehouse.Id,
+                Name = warehouse.Name
+            });
         }
 
         // PUT: api/APIWarehouses/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutWarehouse([FromRoute] int id, [FromBody] Warehouse warehouse)
+        public async Task<IActionResult> PutWarehouse([FromRoute] int id, [FromBody] WarehouseModel model)
         {
+            var warehouse = new Warehouse
+            {
+                Id = model.Id,
+                Name = model.Name
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -84,8 +96,12 @@ namespace SimpleERP.Controllers.API
 
         // POST: api/APIWarehouses
         [HttpPost]
-        public async Task<IActionResult> PostWarehouse([FromBody] Warehouse warehouse)
+        public async Task<IActionResult> PostWarehouse([FromBody] WarehouseModel model)
         {
+            var warehouse = new Warehouse
+            {
+                Name = model.Name
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

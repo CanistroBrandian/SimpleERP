@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.API.Order;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.OrderEntity;
 
@@ -23,9 +24,14 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIOrders
         [HttpGet]
-        public IEnumerable<Order> GetOrders()
+        public async Task<IActionResult> GetOrders()
         {
-            return _context.Orders;
+            return Ok(await _context.Orders.Select(s => new Order
+            {
+                Id = s.Id,
+                Status = s.Status,
+                Information = s.Information
+            }).ToListAsync());
         }
 
         // GET: api/APIOrders/5
@@ -44,13 +50,24 @@ namespace SimpleERP.Controllers.API
                 return NotFound();
             }
 
-            return Ok(order);
+            return Ok(new Order
+            {
+                Id = order.Id,
+                Status = order.Status,
+                Information = order.Information
+            });
         }
 
         // PUT: api/APIOrders/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder([FromRoute] int id, [FromBody] Order order)
+        public async Task<IActionResult> PutOrder([FromRoute] int id, [FromBody] OrderModel model)
         {
+            var order = new Order
+            {
+                Id = model.Id,
+                Information = model.Information,
+                Status = model.Status
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -84,8 +101,13 @@ namespace SimpleERP.Controllers.API
 
         // POST: api/APIOrders
         [HttpPost]
-        public async Task<IActionResult> PostOrder([FromBody] Order order)
+        public async Task<IActionResult> PostOrder([FromBody] OrderModel model)
         {
+            var order = new Order
+            {
+                Status = model.Status,
+                Information = model.Information
+            };
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
