@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-  public  interface IOrderRepository
+    public interface IOrderRepository : ICommonRepository<Order, int>
     {
-        List<Order> GetOrders();
     }
 }

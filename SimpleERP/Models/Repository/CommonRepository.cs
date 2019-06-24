@@ -18,19 +18,17 @@ namespace SimpleERP.Models.Repository
             _context = context;
         }
 
-        public async Task<List<TEntity>> GetAllAsync()
+        public virtual async Task<List<TEntity>> GetAllAsync()
         {
             return await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
 
-        public async Task<TEntity> GetSingleAsync(TId id)
+        public virtual async Task<TEntity> GetSingleAsync(TId id)
         {
-            //Check if this method throws client side evaluation exception because of using of Equals method
-            //return await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(s => s.Id.ToString() == id.ToString());
             return await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(s => s.Id.Equals(id));
         }
 
-        public async Task<TEntity> UpdateAsync(TEntity model)
+        public virtual async Task<TEntity> UpdateAsync(TEntity model)
         {
             if (model == null) throw new Exception("Значения модели не описаны");
 
@@ -41,7 +39,7 @@ namespace SimpleERP.Models.Repository
         }
 
 
-        public async Task<TEntity> AddAsync(TEntity model)
+        public virtual async Task<TEntity> AddAsync(TEntity model)
         {
             if (model == null) throw new Exception("Значения модели не описаны");
 
@@ -51,7 +49,7 @@ namespace SimpleERP.Models.Repository
             return model;
         }
 
-        public async Task<TEntity> DeleteAsync(TId id)
+        public virtual async Task<TEntity> DeleteAsync(TId id)
         {
             var dbEntry = await _context.Set<TEntity>().FirstOrDefaultAsync(s => s.Id.Equals(id));
             if (dbEntry == null) throw new Exception("Значения модели не описаны");

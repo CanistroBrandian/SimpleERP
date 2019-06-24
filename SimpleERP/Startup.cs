@@ -70,6 +70,7 @@ namespace SimpleERP
             });
 
             services.AddScoped<IEmployeRepository, EmployeRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IUserClaimsPrincipalFactory<User>, ERPUserClaimsPrincipalFactory>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

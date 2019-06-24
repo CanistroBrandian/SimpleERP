@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.Abstract;
 using SimpleERP.Models.API.Order;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.OrderEntity;
@@ -15,23 +16,23 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIOrdersController : ControllerBase
     {
-        private readonly ContextEF _context;
+        private readonly IOrderRepository _orderRepository;
 
-        public APIOrdersController(ContextEF context)
+        public APIOrdersController(IOrderRepository repository)
         {
-            _context = context;
+            _orderRepository = repository;
         }
 
         // GET: api/APIOrders
         [HttpGet]
         public async Task<IActionResult> GetOrders()
         {
-            return Ok(await _context.Orders.Select(s => new Order
+            return Ok((await _orderRepository.GetAllAsync()).Select(s => new OrderModel
             {
                 Id = s.Id,
                 Status = s.Status,
                 Information = s.Information
-            }).ToListAsync());
+            }));
         }
 
         // GET: api/APIOrders/5
@@ -43,14 +44,14 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _orderRepository.GetSingleAsync(id);
 
             if (order == null)
             {
                 return NotFound();
             }
 
-            return Ok(new Order
+            return Ok(new OrderModel
             {
                 Id = order.Id,
                 Status = order.Status,
@@ -78,24 +79,7 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _context.Entry(order).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _orderRepository.UpdateAsync(order);
             return NoContent();
         }
 
@@ -113,10 +97,11 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+            order = await _orderRepository.AddAsync(order);
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+            model.Id = order.Id;
+
+            return CreatedAtAction("GetOrder", new { id = order.Id }, model);
         }
 
         // DELETE: api/APIOrders/5
@@ -128,21 +113,19 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _orderRepository.DeleteAsync(id);
             if (order == null)
             {
                 return NotFound();
             }
+            var model = new OrderModel
+            {
+                Id = order.Id,
+                Information = order.Information,
+                Status = order.Status
+            };
 
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-
-            return Ok(order);
-        }
-
-        private bool OrderExists(int id)
-        {
-            return _context.Orders.Any(e => e.Id == id);
+            return Ok(model);
         }
     }
 }
