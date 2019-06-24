@@ -5,9 +5,13 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-   public interface ICommonRepository
+    public interface ICommonRepository<TEntity, TId>
     {
-         List<T> GetAll();
-         
+         Task<List<TEntity>> GetAllAsync();
+         Task<TEntity> GetSingleAsync(TId id);
+         Task<TEntity> UpdateAsync(TEntity model);
+         Task<TEntity> AddAsync(TEntity model);
+         Task<TEntity> DeleteAsync(TId id);
+
     }
 }

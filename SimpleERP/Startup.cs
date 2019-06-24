@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleERP.Helpers;
@@ -50,7 +51,8 @@ namespace SimpleERP
            });
 
             string connection = Configuration.GetConnectionString("SimpleERPContextConnection");
-            services.AddDbContext<ContextEF>(options => options.UseSqlServer(connection));
+            services.AddDbContext<ContextEF>(options => options.UseSqlServer(connection)
+                                                               .ConfigureWarnings(w => w.Throw(RelationalEventId.QueryClientEvaluationWarning)));
             services.AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.Password.RequiredLength = 5;   // минимальная длина

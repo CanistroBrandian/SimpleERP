@@ -8,64 +8,57 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Repository
 {
-    public class CommonRepository<TEntity, TId> where TEntity : class, IEntity<TId>
+    public class CommonRepository<TEntity, TId> : ICommonRepository<TEntity,TId>
+        where TEntity : class, IEntity<TId>
     {
 
         readonly private ContextEF _context;
-        CommonRepository(ContextEF context)
+        public CommonRepository(ContextEF context)
         {
             _context = context;
         }
 
         public async Task<List<TEntity>> GetAllAsync()
         {
-            return await _context.Set<TEntity>().ToListAsync();
+            return await _context.Set<TEntity>().AsNoTracking().ToListAsync();
         }
 
         public async Task<TEntity> GetSingleAsync(TId id)
         {
-            return await _context.Set<TEntity>().FindAsync(id);
+            //Check if this method throws client side evaluation exception because of using of Equals method
+            //return await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(s => s.Id.ToString() == id.ToString());
+            return await _context.Set<TEntity>().AsNoTracking().FirstOrDefaultAsync(s => s.Id.Equals(id));
         }
 
-        public async Task<TEntity> FindAsync(TId id)
+        public async Task<TEntity> UpdateAsync(TEntity model)
         {
-            return await _context.Set<TEntity>().FindAsync(id);
-        }
+            if (model == null) throw new Exception("Значения модели не описаны");
 
-        public async Task<TEntity> Update(TEntity model)
-        {
-            if (model != null)
-            {
-                _context.Set<TEntity>().Attach(model);
-                _context.Entry(model).State = EntityState.Modified;
-               await _context.SaveChangesAsync();
-            }
-            else throw new Exception("Значения модели не описаны");
+            _context.Set<TEntity>().Attach(model);
+            _context.Entry(model).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
             return model;
-            }
-        
+        }
+
 
         public async Task<TEntity> AddAsync(TEntity model)
         {
-            if (model != null)
-            {
-                _context.Set<TEntity>().Attach(model);
-                _context.Entry(model).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
-            }
-            else throw new Exception("Значения модели не описаны");
+            if (model == null) throw new Exception("Значения модели не описаны");
+
+            _context.Set<TEntity>().Attach(model);
+            _context.Entry(model).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
             return model;
         }
-            
-        public async Task<TEntity> Delete(TId id)
+
+        public async Task<TEntity> DeleteAsync(TId id)
         {
-            var dbEntry = _context.Set<TEntity>().FindAsync(id);
-            if(dbEntry != null)
-            {
-                _context.Remove(dbEntry);
-              await  _context.SaveChangesAsync();
-            }
-            return await dbEntry;
+            var dbEntry = await _context.Set<TEntity>().FirstOrDefaultAsync(s => s.Id.Equals(id));
+            if (dbEntry == null) throw new Exception("Значения модели не описаны");
+
+            _context.Remove(dbEntry);
+            await _context.SaveChangesAsync();
+            return dbEntry;
         }
 
     }
