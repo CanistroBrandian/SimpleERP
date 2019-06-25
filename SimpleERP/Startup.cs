@@ -10,14 +10,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleERP.Helpers;
 using SimpleERP.Identity;
-using SimpleERP.Middlewares;
 using SimpleERP.Models.Abstract;
 using SimpleERP.Models.Concreate;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.Auth;
 using System;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SimpleERP
 {
@@ -33,22 +30,6 @@ namespace SimpleERP
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = AuthHelper.BuildTokenValidationParameters();
-            })
-           .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-           {
-               options.Cookie.Name = "SimpleERP.Auth";
-               options.Cookie.HttpOnly = true;
-               options.ExpireTimeSpan = TimeSpan.FromDays(7); // - 7 days "Remember me"
-               options.LoginPath = "/Account/Login/";
-               options.AccessDeniedPath = "/";
-           });
-
             string connection = Configuration.GetConnectionString("SimpleERPContextConnection");
             services.AddDbContext<ContextEF>(options => options.UseSqlServer(connection));
             services.AddIdentity<User, IdentityRole>(opts =>
@@ -65,6 +46,26 @@ namespace SimpleERP
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+            {
+                options.Cookie.Name = "SimpleERP.Auth";
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(7); // - 7 days "Remember me"
+                            options.LoginPath = "/Account/Login/";
+                options.AccessDeniedPath = "/";
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = AuthHelper.BuildTokenValidationParameters();
             });
 
             services.AddScoped<IEmployeRepository, EmployeRepository>();
@@ -89,7 +90,7 @@ namespace SimpleERP
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.AddDynamicSchemeAuthentication();
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
