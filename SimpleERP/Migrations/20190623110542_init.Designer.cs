@@ -9,7 +9,7 @@ using SimpleERP.Models.Context;
 
 namespace SimpleERP.Migrations
 {
-    [DbContext(typeof(IEmployeOrders))]
+    [DbContext(typeof(ContextEF))]
     [Migration("20190623110542_init")]
     partial class init
     {

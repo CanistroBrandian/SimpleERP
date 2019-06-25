@@ -8,9 +8,9 @@ using SimpleERP.Models.Entities.WarehouseEntity;
 
 namespace SimpleERP.Models.Context
 {
-    public class IEmployeOrders : IdentityDbContext<User>
+    public class ContextEF : IdentityDbContext<User>
     {
-        public IEmployeOrders(DbContextOptions<IEmployeOrders> options) : base(options)
+        public ContextEF(DbContextOptions<ContextEF> options) : base(options)
         {
            // Database.EnsureCreated();
         }

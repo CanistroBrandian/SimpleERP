@@ -61,7 +61,7 @@ namespace SimpleERP.Controllers.API
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeClient([FromRoute] string id, [FromBody] EmployeClientModel model)
         { 
-              var employeClient = new EmployeClientModel
+              var employeClient = new EmployeClient
               {
                   ClientId = model.ClientId,
                   EmployeId = model.EmployeId

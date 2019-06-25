@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SimpleERP.Models.Abstract;
 using SimpleERP.Models.API.Employe;
+using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.Auth;
 
 namespace SimpleERP.Controllers.API

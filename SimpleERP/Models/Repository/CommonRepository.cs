@@ -12,8 +12,8 @@ namespace SimpleERP.Models.Repository
         where TEntity : class, IEntity<TId>
     {
 
-        readonly private IEmployeOrders _context;
-        public CommonRepository(IEmployeOrders context)
+        readonly private ContextEF _context;
+        public CommonRepository(ContextEF context)
         {
             _context = context;
         }

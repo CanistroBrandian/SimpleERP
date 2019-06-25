@@ -90,7 +90,7 @@ namespace SimpleERP.Controllers.API
         [HttpPost]
         public async Task<IActionResult> PostProduct([FromBody] ProductModel model)
         {
-            var product = new ProductModel
+            var product = new Product
             {
                 Name = model.Name,
                 Description = model.Description

@@ -89,7 +89,7 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _repository.Entry(goal).State = EntityState.Modified;
+           await _repository.UpdateAsync(goal);
 
            
 

@@ -13,9 +13,10 @@ using SimpleERP.Helpers;
 using SimpleERP.Identity;
 using SimpleERP.Middlewares;
 using SimpleERP.Models.Abstract;
-using SimpleERP.Models.Concreate;
+
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.Auth;
+using SimpleERP.Models.Repository;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace SimpleERP
            });
 
             string connection = Configuration.GetConnectionString("SimpleERPContextConnection");
-            services.AddDbContext<IEmployeOrders>(options => options.UseSqlServer(connection)
+            services.AddDbContext<ContextEF>(options => options.UseSqlServer(connection)
                                                                .ConfigureWarnings(w => w.Throw(RelationalEventId.QueryClientEvaluationWarning)));
             services.AddIdentity<User, IdentityRole>(opts =>
             {
@@ -60,7 +61,7 @@ namespace SimpleERP
                 opts.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
                 opts.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
                 opts.Password.RequireDigit = false; // требуются ли цифры
-            }).AddEntityFrameworkStores<IEmployeOrders>();
+            }).AddEntityFrameworkStores<ContextEF>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -69,8 +70,8 @@ namespace SimpleERP
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddScoped<IEmployeRepository, EmployeRepository>();
-            services.AddScoped<IOrderRepository, OrderRepository>();
+         //   services.AddScoped<IEmployeRepository, CommonRepository<Employe,int>>();
+         //   services.AddScoped<IOrderRepository, CommonRepository>();
             services.AddScoped<IUserClaimsPrincipalFactory<User>, ERPUserClaimsPrincipalFactory>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

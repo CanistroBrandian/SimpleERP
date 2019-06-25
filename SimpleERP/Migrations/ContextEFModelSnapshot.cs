@@ -8,7 +8,7 @@ using SimpleERP.Models.Context;
 
 namespace SimpleERP.Migrations
 {
-    [DbContext(typeof(IEmployeOrders))]
+    [DbContext(typeof(ContextEF))]
     partial class ContextEFModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
