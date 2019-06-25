@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.Abstract;
 using SimpleERP.Models.API.Warehouse;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.WarehouseEntity;
@@ -15,22 +16,22 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIStocksController : ControllerBase
     {
-        private readonly ContextEF _context;
+        private readonly IStockRepository _repository;
 
-        public APIStocksController(ContextEF context)
+        public APIStocksController(IStockRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/APIStocks
         [HttpGet]
         public async Task<IActionResult> GetStocks()
         {
-            return Ok(await _context.Stocks.Select(s => new Stock
+            return Ok((await _repository.GetAllAsync()).Select(s => new StockModel
             {
                 WarehouseId = s.WarehouseId,
                 ProductId = s.ProductId
-            }).ToListAsync());
+            }));
         }
 
         // GET: api/APIStocks/5
@@ -42,14 +43,14 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var stock = await _context.Stocks.FindAsync(id);
+            var stock = await _repository.GetSingleAsync(id);
 
             if (stock == null)
             {
                 return NotFound();
             }
 
-            return Ok(new Stock {
+            return Ok(new StockModel {
                 WarehouseId = stock.WarehouseId,
                 ProductId = stock.ProductId
             });
@@ -74,23 +75,8 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _context.Entry(stock).State = EntityState.Modified;
+            await _repository.UpdateAsync(stock);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!StockExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
 
             return NoContent();
         }
@@ -109,24 +95,10 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            _context.Stocks.Add(stock);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (StockExists(stock.WarehouseId))
-                {
-                    return new StatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                else
-                {
-                    throw;
-                }
-            }
+           await _repository.AddAsync(stock);
 
-            return CreatedAtAction("GetStock", new { id = stock.WarehouseId }, stock);
+            
+            return CreatedAtAction("GetStock", new { id = stock.ProductId }, stock);
         }
 
         // DELETE: api/APIStocks/5
@@ -138,21 +110,20 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var stock = await _context.Stocks.FindAsync(id);
+            var stock = await _repository.DeleteAsync(id);
             if (stock == null)
             {
                 return NotFound();
             }
 
-            _context.Stocks.Remove(stock);
-            await _context.SaveChangesAsync();
+            var model = new StockModel
+            {
+                ProductId = stock.ProductId,
+                WarehouseId = stock.WarehouseId
+            };
 
-            return Ok(stock);
+            return Ok(model);
         }
 
-        private bool StockExists(int id)
-        {
-            return _context.Stocks.Any(e => e.WarehouseId == id);
-        }
     }
 }

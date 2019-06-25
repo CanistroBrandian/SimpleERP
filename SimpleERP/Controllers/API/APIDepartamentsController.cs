@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.Abstract;
+using SimpleERP.Models.API.Departament;
+using SimpleERP.Models.Entities;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.API.Department;
-using SimpleERP.Models.Context;
-using SimpleERP.Models.Entities;
 
 namespace SimpleERP.Controllers.API
 {
@@ -15,23 +12,23 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIDepartamentsController : ControllerBase
     {
-        private readonly ContextEF _context;
+        private readonly IDepartamentRepository _repository;
 
-        public APIDepartamentsController(ContextEF context)
+        public APIDepartamentsController(IDepartamentRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/APIDepartaments
         [HttpGet]
         public async Task<IActionResult> GetDepartaments()
         {
-            return Ok(await _context.Departaments.Select(s => new DepartmentModel
+            return Ok((await _repository.GetAllAsync()).Select(s => new DepartamentModel
             {
                 WarehouseId = s.WarehouseId,
                 Name = s.Name,
                 Id = s.Id
-            }).ToListAsync());
+            }));
         }
 
         // GET: api/APIDepartaments/5
@@ -43,14 +40,14 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var departament = await _context.Departaments.FindAsync(id);
+            var departament = await _repository.GetSingleAsync(id);
 
             if (departament == null)
             {
                 return NotFound();
             }
 
-            return Ok(new Departament
+            return Ok(new DepartamentModel
             {
                 Name = departament.Name,
                 WarehouseId = departament.WarehouseId,
@@ -60,7 +57,7 @@ namespace SimpleERP.Controllers.API
 
         // PUT: api/APIDepartaments/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDepartament([FromRoute] int id, [FromBody] DepartmentModel model)
+        public async Task<IActionResult> PutDepartament([FromRoute] int id, [FromBody] DepartamentModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -79,30 +76,13 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _context.Entry(departament).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DepartamentExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _repository.UpdateAsync(departament);
             return NoContent();
         }
 
         // POST: api/APIDepartaments
         [HttpPost]
-        public async Task<IActionResult> PostDepartament([FromBody] DepartmentModel model)
+        public async Task<IActionResult> PostDepartament([FromBody] DepartamentModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -113,10 +93,11 @@ namespace SimpleERP.Controllers.API
                 Name = model.Name,
                 WarehouseId = model.WarehouseId,
             };
-            _context.Departaments.Add(departament);
-            await _context.SaveChangesAsync();
+            departament = await _repository.AddAsync(departament);
 
-            return CreatedAtAction("GetDepartament", new { id = departament.Id }, departament);
+            model.Id = departament.Id;
+
+            return CreatedAtAction("GetDepartament", new { id = departament.Id }, model);
         }
 
         // DELETE: api/APIDepartaments/5
@@ -128,21 +109,21 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var departament = await _context.Departaments.FindAsync(id);
+            var departament = await _repository.DeleteAsync(id);
             if (departament == null)
             {
                 return NotFound();
             }
 
-            _context.Departaments.Remove(departament);
-            await _context.SaveChangesAsync();
+            var model = new Departament
+            {
+                Name = departament.Name,
+                WarehouseId = departament.WarehouseId,
+            };
 
-            return Ok(departament);
+            return Ok(model);
         }
 
-        private bool DepartamentExists(int id)
-        {
-            return _context.Departaments.Any(e => e.Id == id);
-        }
+        
     }
 }

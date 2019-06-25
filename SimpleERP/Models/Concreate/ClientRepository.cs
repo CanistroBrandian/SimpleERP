@@ -10,8 +10,8 @@ namespace SimpleERP.Models.Concreate
 {
     public class ClientRepository : IClientRepository
     {
-        private readonly ContextEF _context;
-        public ClientRepository(ContextEF context)
+        private readonly IEmployeOrders _context;
+        public ClientRepository(IEmployeOrders context)
         {
             _context = context;
         }

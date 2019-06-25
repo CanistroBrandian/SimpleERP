@@ -9,7 +9,7 @@ namespace SimpleERP
 {
     public static class SampleData
     {
-        public static void Init(ContextEF context)
+        public static void Init(IEmployeOrders context)
         {
             Employe employe = new Employe
             {

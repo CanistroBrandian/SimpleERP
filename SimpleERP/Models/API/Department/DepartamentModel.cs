@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleERP.Models.API.Department
+namespace SimpleERP.Models.API.Departament
 {
-    public class DepartmentModel
+    public class DepartamentModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

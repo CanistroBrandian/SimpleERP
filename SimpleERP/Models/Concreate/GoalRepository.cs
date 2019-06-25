@@ -10,8 +10,8 @@ namespace SimpleERP.Models.Concreate
 {
     public class GoalRepository : IGoalRepository
     {
-        private readonly ContextEF _context;
-        public GoalRepository(ContextEF context)
+        private readonly IEmployeOrders _context;
+        public GoalRepository(IEmployeOrders context)
         {
             _context = context;
         }

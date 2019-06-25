@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.Abstract;
 using SimpleERP.Models.API.Order;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.OrderEntity;
@@ -15,22 +16,22 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIOrderProductsController : ControllerBase
     {
-        private readonly ContextEF _context;
+        private readonly IOrderProduct _repository;
 
-        public APIOrderProductsController(ContextEF context)
+        public APIOrderProductsController(IOrderProduct repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/APIOrderProducts
         [HttpGet]
         public async Task<IActionResult> GetOrderProducts()
         {
-            return Ok(await _context.OrderProducts.Select(s => new OrderProduct
+            return Ok((await _repository.GetAllAsync()).Select(s => new OrderProduct
             {
                 OrderId = s.OrderId,
                 ProductId = s.ProductId
-            }).ToListAsync());
+            }));
         }
 
         // GET: api/APIOrderProducts/5
@@ -42,14 +43,14 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var orderProduct = await _context.OrderProducts.FindAsync(id);
+            var orderProduct = await _repository.GetSingleAsync(id);
 
             if (orderProduct == null)
             {
                 return NotFound();
             }
 
-            return Ok(new OrderProduct
+            return Ok(new OrderProductModel
             {
                 OrderId = orderProduct.OrderId,
                 ProductId = orderProduct.ProductId
@@ -75,23 +76,9 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _context.Entry(orderProduct).State = EntityState.Modified;
+            await _repository.UpdateAsync(orderProduct);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
 
             return NoContent();
         }
@@ -110,22 +97,8 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            _context.OrderProducts.Add(orderProduct);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (OrderProductExists(orderProduct.OrderId))
-                {
-                    return new StatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                else
-                {
-                    throw;
-                }
-            }
+           await _repository.AddAsync(orderProduct);
+           
 
             return CreatedAtAction("GetOrderProduct", new { id = orderProduct.OrderId }, orderProduct);
         }
@@ -139,21 +112,21 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var orderProduct = await _context.OrderProducts.FindAsync(id);
+            var orderProduct = await _repository.DeleteAsync(id);
             if (orderProduct == null)
             {
                 return NotFound();
             }
 
-            _context.OrderProducts.Remove(orderProduct);
-            await _context.SaveChangesAsync();
+            var model = new OrderProduct
+            {
+                OrderId = orderProduct.OrderId,
+                ProductId = orderProduct.ProductId
+            };
 
-            return Ok(orderProduct);
+            return Ok(model);
         }
 
-        private bool OrderProductExists(int id)
-        {
-            return _context.OrderProducts.Any(e => e.OrderId == id);
-        }
+       
     }
 }

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-   public interface IEmployeRepository
+   public interface IEmployeRepository :  ICommonRepository<Employe, string>
     {
-        List<Employe> GetEmployes();
-        Employe AddEmployee(Employe employe);
+      
+      
     }
 }

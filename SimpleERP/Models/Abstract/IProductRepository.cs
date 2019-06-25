@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-   public interface IProductRepository
+   public interface IProductRepository : ICommonRepository<Product, int>
     {
-        List<Product> GetProducts();
+       
     }
 }

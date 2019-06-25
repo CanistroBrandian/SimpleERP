@@ -1,4 +1,4 @@
-﻿using SimpleERP.Models.Entities;
+﻿using SimpleERP.Models.Entities.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-   public interface IDepartamentRepository : ICommonRepository<Departament, int>
+   public interface IEmployeOrders : ICommonRepository<EmployeOrder, int>
     {
-        
     }
 }

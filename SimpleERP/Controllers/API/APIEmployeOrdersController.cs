@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.Abstract;
 using SimpleERP.Models.API.Employe;
-using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.Auth;
 
 namespace SimpleERP.Controllers.API
@@ -15,23 +15,23 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIEmployeOrdersController : ControllerBase
     {
-        private readonly ContextEF _context;
+        private readonly IEmployeOrders _repository;
 
-        public APIEmployeOrdersController(ContextEF context)
+        public APIEmployeOrdersController(IEmployeOrders repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/APIEmployeOrders
         [HttpGet]
         public async Task<IActionResult> GetEmployeOrders()
         {
-            return Ok(await _context.EmployeOrders.Select(s => new EmployeOrder
+            return Ok((await _repository.GetAllAsync()).Select(s => new EmployeOrderModel
             {
 
                 EmployeId = s.EmployeId,
                 OrderId = s.OrderId
-            }).ToListAsync());
+            }));
         }
 
         // GET: api/APIEmployeOrders/5
@@ -44,14 +44,14 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var employeOrder = await _context.EmployeOrders.FindAsync(id);
+            var employeOrder = await _repository.GetSingleAsync(id);
 
             if (employeOrder == null)
             {
                 return NotFound();
             }
 
-            return Ok(new EmployeOrder
+            return Ok(new EmployeOrderModel
             {
 
                 EmployeId = employeOrder.EmployeId,
@@ -78,23 +78,9 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _context.Entry(employeOrder).State = EntityState.Modified;
+            await _repository.UpdateAsync(employeOrder);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeOrderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
 
             return NoContent();
         }
@@ -113,22 +99,8 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            _context.EmployeOrders.Add(employeOrder);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (EmployeOrderExists(employeOrder.OrderId))
-                {
-                    return new StatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                else
-                {
-                    throw;
-                }
-            }
+           await _repository.AddAsync(employeOrder);
+           
 
             return CreatedAtAction("GetEmployeOrder", new { id = employeOrder.OrderId }, employeOrder);
         }
@@ -142,21 +114,21 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var employeOrder = await _context.EmployeOrders.FindAsync(id);
+            var employeOrder = await _repository.DeleteAsync(id);
             if (employeOrder == null)
             {
                 return NotFound();
             }
 
-            _context.EmployeOrders.Remove(employeOrder);
-            await _context.SaveChangesAsync();
+            var model = new EmployeOrder
+            {
+                EmployeId = employeOrder.EmployeId,
+                OrderId = employeOrder.OrderId
+            };
 
-            return Ok(employeOrder);
+            return Ok(model);
         }
 
-        private bool EmployeOrderExists(int id)
-        {
-            return _context.EmployeOrders.Any(e => e.OrderId == id);
-        }
+       
     }
 }

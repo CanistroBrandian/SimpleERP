@@ -16,9 +16,9 @@ namespace SimpleERP.Controllers
     public class HomeController : Controller
     {
 
-        private readonly ContextEF _context;
+        private readonly IEmployeOrders _context;
 
-        public HomeController(ContextEF context)
+        public HomeController(IEmployeOrders context)
         {
             _context = context;
         }

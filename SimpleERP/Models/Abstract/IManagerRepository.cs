@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-   public interface IManagerRepository
+   public interface IManagerRepository :  ICommonRepository<Manager, string>
     {
-        List<Manager> GetManagers();
+
         Manager AddManager(Manager manager);
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.Abstract;
 using SimpleERP.Models.API.Goal;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.GoalEntity;
@@ -15,18 +16,18 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIGoalsController : ControllerBase
     {
-        private readonly ContextEF _context;
+        private readonly IGoalRepository _repository;
 
-        public APIGoalsController(ContextEF context)
+        public APIGoalsController(IGoalRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/APIGoals
         [HttpGet]
         public async Task<ActionResult> GetGoals()
         {
-            return Ok(await _context.Goals.Select(s => new Goal
+            return Ok((await _repository.GetAllAsync()).Select(s => new Goal
             {
                 Name = s.Name,
                 Description = s.Description,
@@ -34,7 +35,7 @@ namespace SimpleERP.Controllers.API
                 ReporterId = s.ReporterId,
                 DateCreated = s.DateCreated,
                 DateFinished = s.DateFinished
-            }).ToListAsync());
+            }));
         }
 
         // GET: api/APIGoals/5
@@ -46,14 +47,14 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var goal = await _context.Goals.FindAsync(id);
+            var goal = await _repository.GetSingleAsync(id);
 
             if (goal == null)
             {
                 return NotFound();
             }
 
-            return Ok(new Goal
+            return Ok(new GoalModel
             {
                 Name = goal.Name,
                 Description = goal.Description,
@@ -73,7 +74,7 @@ namespace SimpleERP.Controllers.API
                 Id = model.Id,
                 Name = model.Name,
                 Description = model.Description,
-                AssigneId = model.AsignId,
+                AssigneId = model.AssigneId,
                 ReporterId = model.ReporterId,
                 DateCreated = model.DateCreated,
                 DateFinished = model.DateFinished
@@ -88,23 +89,9 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _context.Entry(goal).State = EntityState.Modified;
+            _repository.Entry(goal).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!GoalExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+           
 
             return NoContent();
         }
@@ -117,7 +104,7 @@ namespace SimpleERP.Controllers.API
             {
                 Name = model.Name,
                 Description = model.Description,
-                AssigneId = model.AsignId,
+                AssigneId = model.AssigneId,
                 ReporterId = model.ReporterId,
                 DateCreated = model.DateCreated,
                 DateFinished = model.DateFinished
@@ -127,10 +114,11 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            _context.Goals.Add(goal);
-            await _context.SaveChangesAsync();
+            goal = await _repository.AddAsync(goal);
 
-            return CreatedAtAction("GetGoal", new { id = goal.Id }, goal);
+            model.Id = goal.Id;
+
+            return CreatedAtAction("GetGoal", new { id = goal.Id }, model);
         }
 
         // DELETE: api/APIGoals/5
@@ -142,21 +130,26 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var goal = await _context.Goals.FindAsync(id);
+            var goal = await _repository.DeleteAsync(id);
             if (goal == null)
             {
                 return NotFound();
             }
 
-            _context.Goals.Remove(goal);
-            await _context.SaveChangesAsync();
+            var model = new Goal
+            {
+                Id = goal.Id,
+                Name = goal.Name,
+                Description = goal.Description,
+                AssigneId = goal.AssigneId,
+                ReporterId = goal.ReporterId,
+                DateCreated = goal.DateCreated,
+                DateFinished = goal.DateFinished
+            };
 
-            return Ok(goal);
+            return Ok(model);
         }
 
-        private bool GoalExists(int id)
-        {
-            return _context.Goals.Any(e => e.Id == id);
-        }
+       
     }
 }

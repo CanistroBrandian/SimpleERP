@@ -5,32 +5,33 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.Abstract;
 using SimpleERP.Models.API.Employe;
-using SimpleERP.Models.Context;
+
 using SimpleERP.Models.Entities.Auth;
 
 namespace SimpleERP.Controllers.API
 {
     [Route("api/employeclient")]
     [ApiController]
-    public class APIEmployeClientController : ControllerBase
+    public class APIEmployeClientsController : ControllerBase
     {
-        private readonly ContextEF _context;
+        private readonly IEmployeClients _repository;
 
-        public APIEmployeClientController(ContextEF context)
+        public APIEmployeClientsController(IEmployeClients repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/APIEmployeClient
         [HttpGet]
         public async Task<IActionResult> GetEmployeClients()
         {
-            return Ok(await _context.EmployeClients.Select(s => new EmployeClient
+            return Ok((await _repository.GetAllAsync()).Select(s => new EmployeClient
             {
                 ClientId = s.ClientId,
                 EmployeId = s.EmployeId
-            }).ToListAsync());
+            }));
         }
 
         // GET: api/APIEmployeClient/5
@@ -42,14 +43,14 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var employeClient = await _context.EmployeClients.FindAsync(id);
+            var employeClient = await _repository.GetSingleAsync(id);
 
             if (employeClient == null)
             {
                 return NotFound();
             }
 
-            return Ok( new EmployeClient
+            return Ok( new EmployeClientModel
             {
                 ClientId = employeClient.ClientId,
                 EmployeId = employeClient.EmployeId
@@ -60,7 +61,7 @@ namespace SimpleERP.Controllers.API
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployeClient([FromRoute] string id, [FromBody] EmployeClientModel model)
         { 
-              var employeClient = new EmployeClient
+              var employeClient = new EmployeClientModel
               {
                   ClientId = model.ClientId,
                   EmployeId = model.EmployeId
@@ -75,23 +76,9 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _context.Entry(employeClient).State = EntityState.Modified;
+            await _repository.UpdateAsync(employeClient);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeClientExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
 
             return NoContent();
         }
@@ -109,24 +96,11 @@ namespace SimpleERP.Controllers.API
                 ClientId = model.ClientId,
                 EmployeId = model.EmployeId
             };
-            _context.EmployeClients.Add(employeClient);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (EmployeClientExists(employeClient.ClientId))
-                {
-                    return new StatusCodeResult(StatusCodes.Status409Conflict);
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            
+            await _repository.AddAsync(employeClient);
 
-            return CreatedAtAction("GetEmployeClient", new { id = employeClient.ClientId }, employeClient);
+
+            return CreatedAtAction("GetEmployeClient", new { id = employeClient.EmployeId }, employeClient);
         }
 
         // DELETE: api/APIEmployeClient/5
@@ -138,21 +112,21 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var employeClient = await _context.EmployeClients.FindAsync(id);
+            var employeClient = await _repository.DeleteAsync(id);
             if (employeClient == null)
             {
                 return NotFound();
             }
 
-            _context.EmployeClients.Remove(employeClient);
-            await _context.SaveChangesAsync();
+            var model = new EmployeClient
+            {
+                ClientId = employeClient.ClientId,
+                EmployeId = employeClient.EmployeId
+            };
 
-            return Ok(employeClient);
+            return Ok(model);
         }
 
-        private bool EmployeClientExists(string id)
-        {
-            return _context.EmployeClients.Any(e => e.ClientId == id);
-        }
+       
     }
 }

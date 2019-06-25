@@ -51,7 +51,7 @@ namespace SimpleERP
            });
 
             string connection = Configuration.GetConnectionString("SimpleERPContextConnection");
-            services.AddDbContext<ContextEF>(options => options.UseSqlServer(connection)
+            services.AddDbContext<IEmployeOrders>(options => options.UseSqlServer(connection)
                                                                .ConfigureWarnings(w => w.Throw(RelationalEventId.QueryClientEvaluationWarning)));
             services.AddIdentity<User, IdentityRole>(opts =>
             {
@@ -60,7 +60,7 @@ namespace SimpleERP
                 opts.Password.RequireLowercase = false; // требуются ли символы в нижнем регистре
                 opts.Password.RequireUppercase = false; // требуются ли символы в верхнем регистре
                 opts.Password.RequireDigit = false; // требуются ли цифры
-            }).AddEntityFrameworkStores<ContextEF>();
+            }).AddEntityFrameworkStores<IEmployeOrders>();
 
             services.Configure<CookiePolicyOptions>(options =>
             {

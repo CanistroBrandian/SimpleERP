@@ -13,7 +13,7 @@ namespace SimpleERP.Models.API.Goal
         public string Description { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime DateFinished { get; set; }
-        public string AsignId { get; set; }
+        public string AssigneId { get; set; }
         public string ReporterId { get; set; }
 
 

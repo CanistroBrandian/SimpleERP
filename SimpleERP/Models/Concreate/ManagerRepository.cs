@@ -10,8 +10,8 @@ namespace SimpleERP.Models.Concreate
 {
     public class ManagerRepository : IManagerRepository
     {
-        private readonly ContextEF _context;
-        public ManagerRepository(ContextEF context)
+        private readonly IEmployeOrders _context;
+        public ManagerRepository(IEmployeOrders context)
         {
             _context = context;
         }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-   public interface IClientRepository
+   public interface IClientRepository : ICommonRepository<Client, string>
     {
-        List<Client> GetClients();
+        
     }
 }

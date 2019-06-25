@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.Abstract;
 using SimpleERP.Models.API.Warehouse;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.WarehouseEntity;
@@ -15,21 +16,23 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIWarehousesController : ControllerBase
     {
-        private readonly ContextEF _context;
 
-        public APIWarehousesController(ContextEF context)
+        private readonly IWarehouseRepository _repository;
+
+        public APIWarehousesController(IWarehouseRepository repo)
         {
-            _context = context;
+            _repository = repo;
         }
 
         // GET: api/APIWarehouses
         [HttpGet]
         public async Task<IActionResult> GetWarehouses()
         {
-            return Ok(await _context.Warehouses.Select(s => new Warehouse {
+            return Ok((await _repository.GetAllAsync()).Select(s => new WarehouseModel
+            {
                 Id = s.Id,
                 Name = s.Name
-            }).ToListAsync());
+            }));
         }
 
         // GET: api/APIWarehouses/5
@@ -41,14 +44,15 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var warehouse = await _context.Warehouses.FindAsync(id);
+            var warehouse = await _repository.GetSingleAsync(id);
 
             if (warehouse == null)
             {
                 return NotFound();
             }
 
-            return Ok(new Warehouse {
+            return Ok(new WarehouseModel
+            {
                 Id = warehouse.Id,
                 Name = warehouse.Name
             });
@@ -73,70 +77,53 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _context.Entry(warehouse).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!WarehouseExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _repository.UpdateAsync(warehouse);
             return NoContent();
-        }
-
-        // POST: api/APIWarehouses
-        [HttpPost]
-        public async Task<IActionResult> PostWarehouse([FromBody] WarehouseModel model)
-        {
-            var warehouse = new Warehouse
-            {
-                Name = model.Name
-            };
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.Warehouses.Add(warehouse);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetWarehouse", new { id = warehouse.Id }, warehouse);
-        }
-
-        // DELETE: api/APIWarehouses/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteWarehouse([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var warehouse = await _context.Warehouses.FindAsync(id);
-            if (warehouse == null)
-            {
-                return NotFound();
-            }
-
-            _context.Warehouses.Remove(warehouse);
-            await _context.SaveChangesAsync();
-
-            return Ok(warehouse);
-        }
-
-        private bool WarehouseExists(int id)
-        {
-            return _context.Warehouses.Any(e => e.Id == id);
-        }
     }
+
+    // POST: api/APIWarehouses
+    [HttpPost]
+    public async Task<IActionResult> PostWarehouse([FromBody] WarehouseModel model)
+    {
+        var warehouse = new Warehouse
+        {
+            Id = model.Id,
+            Name = model.Name,
+        };
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        warehouse = await _repository.AddAsync(warehouse);
+
+        model.Id = warehouse.Id;
+
+        return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
+    }
+
+    // DELETE: api/APIWarehouses/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteWarehouse([FromRoute] int id)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var warehouse = await _repository.DeleteAsync(id);
+        if (warehouse == null)
+        {
+            return NotFound();
+        }
+
+        var model = new WarehouseModel
+        {
+            Id = warehouse.Id,
+            Name = warehouse.Name,
+        };
+
+        return Ok(model);
+    }
+}
 }

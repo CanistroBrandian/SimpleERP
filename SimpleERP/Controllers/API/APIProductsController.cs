@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SimpleERP.Models.Abstract;
 using SimpleERP.Models.API.Product;
 using SimpleERP.Models.Context;
 using SimpleERP.Models.Entities.WarehouseEntity;
@@ -15,23 +16,23 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIProductsController : ControllerBase
     {
-        private readonly ContextEF _context;
+        private readonly IProductRepository _repository;
 
-        public APIProductsController(ContextEF context)
+        public APIProductsController(IProductRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         // GET: api/APIProducts
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
-            return Ok(await _context.Products.Select(s => new Product
+            return Ok((await _repository.GetAllAsync()).Select(s => new ProductModel
             {
                 Id = s.Id,
                 Name = s.Name,
                 Description = s.Description
-            }).ToListAsync());
+            }));
         }
 
         // GET: api/APIProducts/5
@@ -43,14 +44,14 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _repository.GetSingleAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            return Ok(new Product
+            return Ok(new ProductModel
             {
                 Id = product.Id,
                 Name = product.Name,
@@ -78,23 +79,9 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-            _context.Entry(product).State = EntityState.Modified;
+            await _repository.UpdateAsync(product);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+
 
             return NoContent();
         }
@@ -103,7 +90,7 @@ namespace SimpleERP.Controllers.API
         [HttpPost]
         public async Task<IActionResult> PostProduct([FromBody] ProductModel model)
         {
-            var product = new Product
+            var product = new ProductModel
             {
                 Name = model.Name,
                 Description = model.Description
@@ -113,10 +100,11 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            product = await _repository.AddAsync(product);
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
+            model.Id = product.Id;
+
+            return CreatedAtAction("GetProduct", new { id = product.Id }, model);
         }
 
         // DELETE: api/APIProducts/5
@@ -128,21 +116,20 @@ namespace SimpleERP.Controllers.API
                 return BadRequest(ModelState);
             }
 
-            var product = await _context.Products.FindAsync(id);
+            var product = await _repository.DeleteAsync(id);
             if (product == null)
             {
                 return NotFound();
             }
+            var model = new ProductModel
+            {
+                Name = product.Name,
+                Description = product.Description
+            };
 
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-
-            return Ok(product);
+            return Ok(model);
         }
 
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
-        }
+        
     }
 }

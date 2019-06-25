@@ -11,8 +11,8 @@ namespace SimpleERP.Models.Concreate
 {
     public class OrderRepository : CommonRepository<Order, int>, IOrderRepository
     {
-        private readonly ContextEF _context;
-        public OrderRepository(ContextEF context) : base(context)
+        private readonly IEmployeOrders _context;
+        public OrderRepository(IEmployeOrders context) : base(context)
         {
             _context = context;
         }
