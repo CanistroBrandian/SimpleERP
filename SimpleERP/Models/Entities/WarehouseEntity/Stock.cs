@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Entities.WarehouseEntity
 {
-    public class Stock : IEntity<int>
+    public class Stock 
     {
         public int ProductId { get; set; }
         public Product Product { get; set; }

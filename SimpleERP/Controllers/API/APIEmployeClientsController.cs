@@ -36,7 +36,7 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIEmployeClient/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployeClient([FromRoute] string id)
+        public async Task<IActionResult> GetEmployeClient([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
@@ -105,7 +105,7 @@ namespace SimpleERP.Controllers.API
 
         // DELETE: api/APIEmployeClient/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployeClient([FromRoute] string id)
+        public async Task<IActionResult> DeleteEmployeClient([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {

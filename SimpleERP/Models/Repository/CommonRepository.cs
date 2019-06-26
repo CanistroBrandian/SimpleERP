@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Repository
 {
-    public class CommonRepository<TEntity, TId> : ICommonRepository<TEntity, TId>
+    public abstract class CommonRepository<TEntity, TId> : ICommonRepository<TEntity, TId>
         where TEntity : class, IEntity<TId>
     {
 

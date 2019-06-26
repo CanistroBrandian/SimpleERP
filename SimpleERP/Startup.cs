@@ -70,9 +70,16 @@ namespace SimpleERP
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-         //   services.AddScoped<IEmployeRepository, CommonRepository<Employe,int>>();
-         //   services.AddScoped<IOrderRepository, CommonRepository>();
-            services.AddScoped<IUserClaimsPrincipalFactory<User>, ERPUserClaimsPrincipalFactory>();
+           services.AddScoped<IEmployeRepository,EmployeRepository>();
+           services.AddScoped<IOrderRepository, OrderRepository>();
+           services.AddScoped<IDepartamentRepository, DepartamentRepository>();
+           services.AddScoped<IProductRepository, ProductRepository>();
+           services.AddScoped<IUserRepository, UserRepository>();
+           services.AddScoped<IGoalRepository, GoalRepository>();
+           services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+           services.AddScoped<IManagerRepository, ManagerRepository>();
+           services.AddScoped<IClientRepository, ClientRepository>();
+           services.AddScoped<IUserClaimsPrincipalFactory<User>, ERPUserClaimsPrincipalFactory>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

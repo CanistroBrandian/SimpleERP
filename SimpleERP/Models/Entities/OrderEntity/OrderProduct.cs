@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Entities.OrderEntity
 {
-    public class OrderProduct : IEntity<int>
+    public class OrderProduct 
     {
         public int ProductId { get; set; }
         public Product Product { get; set; }
