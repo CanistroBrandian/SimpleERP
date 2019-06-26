@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-   public interface IEmployeOrders : ICommonRepository<EmployeOrder, int>
+   public interface IEmployeClientsRepository: ICommonRepository<EmployeClient, int>
     {
     }
 }

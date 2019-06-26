@@ -16,9 +16,9 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIEmployeClientsController : ControllerBase
     {
-        private readonly IEmployeClients _repository;
+        private readonly IEmployeClientsRepository _repository;
 
-        public APIEmployeClientsController(IEmployeClients repository)
+        public APIEmployeClientsController(IEmployeClientsRepository repository)
         {
             _repository = repository;
         }

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Models.Abstract
 {
-   public interface IUserRepository
+   public interface IUserRepository : ICommonRepository<User, string>
     {
-        List<User> GetUsers();
-         User AddUser(User user);
+       
     }
 }

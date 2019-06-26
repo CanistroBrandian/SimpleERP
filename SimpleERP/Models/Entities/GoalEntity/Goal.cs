@@ -1,4 +1,5 @@
-﻿using SimpleERP.Models.Entities.Auth;
+﻿using SimpleERP.Models.Abstract;
+using SimpleERP.Models.Entities.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 namespace SimpleERP.Models.Entities.GoalEntity
 
 {
-    public class Goal
+    public class Goal : IEntity<int>
     {
         public int Id { get; set; }
         public string Name { get; set; }

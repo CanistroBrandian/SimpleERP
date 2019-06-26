@@ -8,6 +8,6 @@ namespace SimpleERP.Models.Abstract
 {
    public interface IGoalRepository : ICommonRepository<Goal, int>
     {
-        List<Goal> GetGoals();
+     
     }
 }
