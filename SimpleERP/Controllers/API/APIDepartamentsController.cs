@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.Abstract;
+using SimpleERP.Abstract;
 using SimpleERP.Models.API.Departament;
-using SimpleERP.Models.Entities;
+using SimpleERP.Data.Entities;
 using System.Linq;
 using System.Threading.Tasks;
 

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.Abstract;
+using SimpleERP.Abstract;
 using SimpleERP.Models.API.Order;
-using SimpleERP.Models.Context;
-using SimpleERP.Models.Entities.OrderEntity;
+using SimpleERP.Data.Context;
+using SimpleERP.Data.Entities.OrderEntity;
 
 namespace SimpleERP.Controllers.API
 {

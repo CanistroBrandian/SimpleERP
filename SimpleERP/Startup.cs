@@ -12,11 +12,11 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleERP.Helpers;
 using SimpleERP.Identity;
 using SimpleERP.Middlewares;
-using SimpleERP.Models.Abstract;
+using SimpleERP.Abstract;
 
-using SimpleERP.Models.Context;
-using SimpleERP.Models.Entities.Auth;
-using SimpleERP.Models.Repository;
+using SimpleERP.Data.Context;
+using SimpleERP.Data.Entities.Auth;
+using SimpleERP.Data.Repository;
 using System;
 using System.Net;
 using System.Threading.Tasks;

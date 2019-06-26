@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SimpleERP.Models.Context;
+using SimpleERP.Data.Context;
 
 namespace SimpleERP.Migrations
 {
@@ -129,7 +129,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.ClientOrder", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.ClientOrder", b =>
                 {
                     b.Property<string>("ClientId");
 
@@ -142,7 +142,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("ClientOrders");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.EmployeClient", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.EmployeClient", b =>
                 {
                     b.Property<string>("ClientId");
 
@@ -155,7 +155,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("EmployeClients");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.EmployeOrder", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.EmployeOrder", b =>
                 {
                     b.Property<int>("OrderId");
 
@@ -168,7 +168,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("EmployeOrders");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.User", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.User", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
@@ -187,6 +187,8 @@ namespace SimpleERP.Migrations
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("IsActive");
 
                     b.Property<bool>("LockoutEnabled");
 
@@ -232,7 +234,7 @@ namespace SimpleERP.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Departament", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Departament", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -249,7 +251,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("Departaments");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.GoalEntity.Goal", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.GoalEntity.Goal", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -278,7 +280,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("Goals");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.OrderEntity.Order", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.OrderEntity.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -293,7 +295,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.OrderEntity.OrderProduct", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.OrderEntity.OrderProduct", b =>
                 {
                     b.Property<int>("OrderId");
 
@@ -306,7 +308,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("OrderProducts");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.WarehouseEntity.Product", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.WarehouseEntity.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -321,7 +323,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.WarehouseEntity.Stock", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.WarehouseEntity.Stock", b =>
                 {
                     b.Property<int>("WarehouseId");
 
@@ -336,7 +338,7 @@ namespace SimpleERP.Migrations
                     b.ToTable("Stocks");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.WarehouseEntity.Warehouse", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.WarehouseEntity.Warehouse", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -349,9 +351,9 @@ namespace SimpleERP.Migrations
                     b.ToTable("Warehouses");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Client", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.Client", b =>
                 {
-                    b.HasBaseType("SimpleERP.Models.Entities.Auth.User");
+                    b.HasBaseType("SimpleERP.Data.Entities.Auth.User");
 
 
                     b.ToTable("Client");
@@ -359,9 +361,9 @@ namespace SimpleERP.Migrations
                     b.HasDiscriminator().HasValue("Client");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Employe", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.Employe", b =>
                 {
-                    b.HasBaseType("SimpleERP.Models.Entities.Auth.User");
+                    b.HasBaseType("SimpleERP.Data.Entities.Auth.User");
 
                     b.Property<int>("DepartamentId");
 
@@ -372,9 +374,9 @@ namespace SimpleERP.Migrations
                     b.HasDiscriminator().HasValue("Employe");
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Manager", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.Manager", b =>
                 {
-                    b.HasBaseType("SimpleERP.Models.Entities.Auth.Employe");
+                    b.HasBaseType("SimpleERP.Data.Entities.Auth.Employe");
 
 
                     b.ToTable("Manager");
@@ -392,7 +394,7 @@ namespace SimpleERP.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.Auth.User")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -400,7 +402,7 @@ namespace SimpleERP.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.Auth.User")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -413,7 +415,7 @@ namespace SimpleERP.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SimpleERP.Models.Entities.Auth.User")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -421,101 +423,101 @@ namespace SimpleERP.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.Auth.User")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.ClientOrder", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.ClientOrder", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.Auth.Client", "Client")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.Client", "Client")
                         .WithMany("ClientOrders")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SimpleERP.Models.Entities.OrderEntity.Order", "Order")
+                    b.HasOne("SimpleERP.Data.Entities.OrderEntity.Order", "Order")
                         .WithMany("ClientOrders")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.EmployeClient", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.EmployeClient", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.Auth.Client", "Client")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.Client", "Client")
                         .WithMany("EmployeClients")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("SimpleERP.Models.Entities.Auth.Employe", "Employe")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.Employe", "Employe")
                         .WithMany("EmployeClients")
                         .HasForeignKey("EmployeId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.EmployeOrder", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.EmployeOrder", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.Auth.Employe", "Employe")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.Employe", "Employe")
                         .WithMany()
                         .HasForeignKey("EmployeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SimpleERP.Models.Entities.OrderEntity.Order", "Order")
+                    b.HasOne("SimpleERP.Data.Entities.OrderEntity.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Departament", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Departament", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.WarehouseEntity.Warehouse", "Warehouse")
+                    b.HasOne("SimpleERP.Data.Entities.WarehouseEntity.Warehouse", "Warehouse")
                         .WithMany("Departaments")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.GoalEntity.Goal", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.GoalEntity.Goal", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.Auth.Employe", "Assigne")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.Employe", "Assigne")
                         .WithMany("Goals")
                         .HasForeignKey("AssigneId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("SimpleERP.Models.Entities.Auth.Manager", "Reporter")
+                    b.HasOne("SimpleERP.Data.Entities.Auth.Manager", "Reporter")
                         .WithMany("CreatedGoals")
                         .HasForeignKey("ReporterId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.OrderEntity.OrderProduct", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.OrderEntity.OrderProduct", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.OrderEntity.Order", "Order")
+                    b.HasOne("SimpleERP.Data.Entities.OrderEntity.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SimpleERP.Models.Entities.WarehouseEntity.Product", "Product")
+                    b.HasOne("SimpleERP.Data.Entities.WarehouseEntity.Product", "Product")
                         .WithMany("OrderProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.WarehouseEntity.Stock", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.WarehouseEntity.Stock", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.WarehouseEntity.Product", "Product")
+                    b.HasOne("SimpleERP.Data.Entities.WarehouseEntity.Product", "Product")
                         .WithMany("Stocks")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("SimpleERP.Models.Entities.WarehouseEntity.Warehouse", "Warehouse")
+                    b.HasOne("SimpleERP.Data.Entities.WarehouseEntity.Warehouse", "Warehouse")
                         .WithMany("Products")
                         .HasForeignKey("WarehouseId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SimpleERP.Models.Entities.Auth.Employe", b =>
+            modelBuilder.Entity("SimpleERP.Data.Entities.Auth.Employe", b =>
                 {
-                    b.HasOne("SimpleERP.Models.Entities.Departament", "Departament")
+                    b.HasOne("SimpleERP.Data.Entities.Departament", "Departament")
                         .WithMany("Employees")
                         .HasForeignKey("DepartamentId")
                         .OnDelete(DeleteBehavior.Cascade);
