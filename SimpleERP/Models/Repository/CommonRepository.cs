@@ -43,8 +43,7 @@ namespace SimpleERP.Models.Repository
         {
             if (model == null) throw new Exception("Значения модели не описаны");
 
-            _context.Set<TEntity>().Attach(model);
-            _context.Entry(model).State = EntityState.Modified;
+            _context.Set<TEntity>().Add(model);
             await _context.SaveChangesAsync();
             return model;
         }

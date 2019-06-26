@@ -25,15 +25,20 @@ namespace SimpleERP
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+             .SetBasePath(env.ContentRootPath)
+             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+             .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -51,9 +56,8 @@ namespace SimpleERP
                options.AccessDeniedPath = "/";
            });
 
-            string connection = Configuration.GetConnectionString("SimpleERPContextConnection");
-            services.AddDbContext<ContextEF>(options => options.UseSqlServer(connection)
-                                                               .ConfigureWarnings(w => w.Throw(RelationalEventId.QueryClientEvaluationWarning)));
+            ConfigureDbContext(services);
+
             services.AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.Password.RequiredLength = 5;   // минимальная длина
@@ -70,15 +74,15 @@ namespace SimpleERP
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-         //   services.AddScoped<IEmployeRepository, CommonRepository<Employe,int>>();
-         //   services.AddScoped<IOrderRepository, CommonRepository>();
+            InitializeApplicationServices(services);
+
             services.AddScoped<IUserClaimsPrincipalFactory<User>, ERPUserClaimsPrincipalFactory>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public virtual void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -100,6 +104,19 @@ namespace SimpleERP
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        protected virtual void ConfigureDbContext(IServiceCollection services)
+        {
+            string connection = Configuration.GetConnectionString("SimpleERPContextConnection");
+            services.AddDbContext<ContextEF>(options => options.UseSqlServer(connection)
+                                                               .ConfigureWarnings(w => w.Throw(RelationalEventId.QueryClientEvaluationWarning)));
+        }
+
+
+        protected virtual void InitializeApplicationServices(IServiceCollection services)
+        {
+            services.AddScoped<IWarehouseRepository, WarehouseRepository>();
         }
     }
 }
