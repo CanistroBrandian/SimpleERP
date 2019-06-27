@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Controllers.API
 {
-    [Route("api/warehouse")]
+    [Route(BASE_ROUTE)]
     [ApiController]
     public class APIWarehousesController : ControllerBase
     {
+
+        public const string BASE_ROUTE = "api/warehouse";
 
         private readonly IWarehouseRepository _repository;
 
