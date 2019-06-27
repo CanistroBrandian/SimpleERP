@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SimpleERP.Data.Context;
+using SimpleERP.Attributes;
 using SimpleERP.Data.Entities.Auth;
+using SimpleERP.Helpers;
 using SimpleERP.Models.API.User;
-using SimpleERP.Models.ViewModels;
+using System.Threading.Tasks;
 
 namespace SimpleERP.Controllers.API
 {
@@ -23,6 +19,8 @@ namespace SimpleERP.Controllers.API
         {
             _userManager = userManager;
         }
+
+        [APIAuthorize(Roles = AuthHelper.SUPERVISOR_ROLE)]
         [HttpPut("activate")]
         public async Task<ActionResult> ChangeActive(ChangeActivationModel model)
         {

@@ -13,6 +13,7 @@ using SimpleERP.Data.Entities.WarehouseEntity;
 namespace SimpleERP.Controllers.API
 {
     [Route("api/warehouse")]
+    [APIAuthorize]
     [ApiController]
     public class APIWarehousesController : ControllerBase
     {
@@ -102,8 +103,24 @@ namespace SimpleERP.Controllers.API
         return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
     }
 
-    // DELETE: api/APIWarehouses/5
-    [HttpDelete("{id}")]
+        [HttpPost("stocks")]
+        public async Task<IActionResult> AddProductToWarehouse([FromBody] WarehouseModel model)
+        {
+           
+
+            return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
+        }
+
+        [HttpGet("stocks")]
+        public async Task<IActionResult> GEtAllWarehouseStocks(int warehouseId)
+        {
+            
+
+            return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
+        }
+
+        // DELETE: api/APIWarehouses/5
+        [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteWarehouse([FromRoute] int id)
     {
         if (!ModelState.IsValid)

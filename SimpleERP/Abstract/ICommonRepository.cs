@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Abstract
 {
-    public interface ICommonRepository<TEntity, TId>
+    public interface ICommonRepository<TEntity, TId> where TEntity : IEntity<TId>
     {
          Task<List<TEntity>> GetAllAsync();
          Task<TEntity> GetSingleAsync(TId id);

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using SimpleERP.Abstract;
+using SimpleERP.Data.Entities.Auth;
+using SimpleERP.Models.API.Employe;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleERP.Abstract;
-using SimpleERP.Models.API.Employe;
-using SimpleERP.Data.Context;
-using SimpleERP.Data.Entities.Auth;
 
 namespace SimpleERP.Controllers.API
 {

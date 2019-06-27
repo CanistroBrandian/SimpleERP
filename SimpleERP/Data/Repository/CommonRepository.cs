@@ -12,7 +12,7 @@ namespace SimpleERP.Data.Repository
         where TEntity : class, IEntity<TId>
     {
 
-        readonly private ContextEF _context;
+        readonly protected ContextEF _context;
         public CommonRepository(ContextEF context)
         {
             _context = context;
