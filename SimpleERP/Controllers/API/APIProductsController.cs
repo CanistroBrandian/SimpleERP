@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using SimpleERP.Abstract;
+using SimpleERP.Data.Entities.WarehouseEntity;
+using SimpleERP.Models.API.Product;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.Abstract;
-using SimpleERP.Models.API.Product;
-using SimpleERP.Models.Context;
-using SimpleERP.Models.Entities.WarehouseEntity;
 
 namespace SimpleERP.Controllers.API
 {
@@ -16,6 +11,11 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIProductsController : ControllerBase
     {
+
+        //API Authhorize Poves' Vezde
+
+        //Promezutochnie sdelay normal'no
+
         private readonly IProductRepository _repository;
 
         public APIProductsController(IProductRepository repository)

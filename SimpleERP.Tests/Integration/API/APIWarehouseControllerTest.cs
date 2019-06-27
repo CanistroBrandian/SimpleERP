@@ -1,7 +1,7 @@
-﻿using SimpleERP.Controllers.API;
-using SimpleERP.Models.Abstract;
+﻿using SimpleERP.Abstract;
+using SimpleERP.Controllers.API;
+using SimpleERP.Data.Entities.WarehouseEntity;
 using SimpleERP.Models.API.Warehouse;
-using SimpleERP.Models.Entities.WarehouseEntity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

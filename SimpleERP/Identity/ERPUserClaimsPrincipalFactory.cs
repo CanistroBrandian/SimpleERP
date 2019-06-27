@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using SimpleERP.Models.Entities.Auth;
+using SimpleERP.Data.Entities.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,14 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.Abstract;
+using SimpleERP.Abstract;
+using SimpleERP.Attributes;
+using SimpleERP.Data.Entities;
 using SimpleERP.Models.API.Departament;
-using SimpleERP.Models.Entities;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleERP.Controllers.API
 {
     [Route("api/departament")]
+    [APIAuthorize]
     [ApiController]
     public class APIDepartamentsController : ControllerBase
     {

@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SimpleERP.Models.Abstract;
+using SimpleERP.Abstract;
 using SimpleERP.Models.API.Warehouse;
-using SimpleERP.Models.Entities.WarehouseEntity;
+using SimpleERP.Data.Context;
+using SimpleERP.Data.Entities.WarehouseEntity;
 using System.Linq;
 using System.Threading.Tasks;
+using SimpleERP.Attributes;
 
 namespace SimpleERP.Controllers.API
 {
     [Route(BASE_ROUTE)]
+    [APIAuthorize]
     [ApiController]
     public class APIWarehousesController : ControllerBase
     {
@@ -76,51 +79,67 @@ namespace SimpleERP.Controllers.API
 
             await _repository.UpdateAsync(warehouse);
             return NoContent();
-    }
-
-    // POST: api/APIWarehouses
-    [HttpPost]
-    public async Task<IActionResult> PostWarehouse([FromBody] WarehouseModel model)
-    {
-        var warehouse = new Warehouse
-        {
-            Id = model.Id,
-            Name = model.Name,
-        };
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
         }
 
-        warehouse = await _repository.AddAsync(warehouse);
-
-        model.Id = warehouse.Id;
-
-        return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
-    }
-
-    // DELETE: api/APIWarehouses/5
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteWarehouse([FromRoute] int id)
-    {
-        if (!ModelState.IsValid)
+        // POST: api/APIWarehouses
+        [HttpPost]
+        public async Task<IActionResult> PostWarehouse([FromBody] WarehouseModel model)
         {
-            return BadRequest(ModelState);
+            var warehouse = new Warehouse
+            {
+                Id = model.Id,
+                Name = model.Name,
+            };
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            warehouse = await _repository.AddAsync(warehouse);
+
+            model.Id = warehouse.Id;
+
+            return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
         }
 
-        var warehouse = await _repository.DeleteAsync(id);
-        if (warehouse == null)
+        [HttpPost("stocks")]
+        public async Task<IActionResult> AddProductToWarehouse([FromBody] WarehouseModel model)
         {
-            return NotFound();
+
+
+            return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
         }
 
-        var model = new WarehouseModel
+        [HttpGet("stocks")]
+        public async Task<IActionResult> GEtAllWarehouseStocks(int warehouseId)
         {
-            Id = warehouse.Id,
-            Name = warehouse.Name,
-        };
 
-        return Ok(model);
+
+            return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
+        }
+
+        // DELETE: api/APIWarehouses/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteWarehouse([FromRoute] int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var warehouse = await _repository.DeleteAsync(id);
+            if (warehouse == null)
+            {
+                return NotFound();
+            }
+
+            var model = new WarehouseModel
+            {
+                Id = warehouse.Id,
+                Name = warehouse.Name,
+            };
+
+            return Ok(model);
+        }
     }
-}
 }

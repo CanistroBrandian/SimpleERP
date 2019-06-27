@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using SimpleERP.Abstract;
+using SimpleERP.Attributes;
+using SimpleERP.Data.Entities.Auth;
+using SimpleERP.Models.API.Employe;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.Abstract;
-using SimpleERP.Models.API.Employe;
-
-using SimpleERP.Models.Entities.Auth;
 
 namespace SimpleERP.Controllers.API
 {
     [Route("api/employeclient")]
+    [APIAuthorize]
     [ApiController]
     public class APIEmployeClientsController : ControllerBase
     {
-        private readonly IEmployeClients _repository;
+        private readonly IEmployeClientsRepository _repository;
 
-        public APIEmployeClientsController(IEmployeClients repository)
+        public APIEmployeClientsController(IEmployeClientsRepository repository)
         {
             _repository = repository;
         }
@@ -36,7 +33,7 @@ namespace SimpleERP.Controllers.API
 
         // GET: api/APIEmployeClient/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployeClient([FromRoute] string id)
+        public async Task<IActionResult> GetEmployeClient([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
@@ -105,7 +102,7 @@ namespace SimpleERP.Controllers.API
 
         // DELETE: api/APIEmployeClient/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployeClient([FromRoute] string id)
+        public async Task<IActionResult> DeleteEmployeClient([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {

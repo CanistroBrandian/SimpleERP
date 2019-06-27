@@ -1,9 +1,9 @@
 //using Microsoft.EntityFrameworkCore;
 //using Moq;
-//using SimpleERP.Models.Abstract;
+//using SimpleERP.Abstract;
 //using SimpleERP.Models.Concreate;
-//using SimpleERP.Models.Context;
-//using SimpleERP.Models.Entities.Auth;
+//using SimpleERP.Data.Context;
+//using SimpleERP.Data.Entities.Auth;
 //using Xunit;
 //using System.Linq;
 

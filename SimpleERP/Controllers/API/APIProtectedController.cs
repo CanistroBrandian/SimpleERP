@@ -2,7 +2,7 @@
 using SimpleERP.Attributes;
 using SimpleERP.Extensions;
 using SimpleERP.Helpers;
-using SimpleERP.Models.Entities.Auth;
+using SimpleERP.Data.Entities.Auth;
 
 namespace SimpleERP.Controllers.API
 {

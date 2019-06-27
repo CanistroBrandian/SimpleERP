@@ -1,10 +1,9 @@
 ﻿using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.Abstract;
-using SimpleERP.Models.Context;
-using SimpleERP.Models.Entities.WarehouseEntity;
-using SimpleERP.Models.Repository;
-using System;
+using SimpleERP.Abstract;
+using SimpleERP.Data.Context;
+using SimpleERP.Data.Entities.WarehouseEntity;
+using SimpleERP.Data.Repository;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

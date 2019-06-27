@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using SimpleERP.Abstract;
+using SimpleERP.Attributes;
+using SimpleERP.Data.Entities.GoalEntity;
+using SimpleERP.Models.API.Goal;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.Abstract;
-using SimpleERP.Models.API.Goal;
-using SimpleERP.Models.Context;
-using SimpleERP.Models.Entities.GoalEntity;
 
 namespace SimpleERP.Controllers.API
 {
     [Route("api/goal")]
+    [APIAuthorize]
     [ApiController]
     public class APIGoalsController : ControllerBase
     {

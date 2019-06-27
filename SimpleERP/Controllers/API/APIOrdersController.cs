@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using SimpleERP.Abstract;
+using SimpleERP.Attributes;
+using SimpleERP.Data.Entities.OrderEntity;
+using SimpleERP.Models.API.Order;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.Abstract;
-using SimpleERP.Models.API.Order;
-using SimpleERP.Models.Context;
-using SimpleERP.Models.Entities.OrderEntity;
 
 namespace SimpleERP.Controllers.API
 {
     [Route("api/order")]
+    [APIAuthorize]
     [ApiController]
     public class APIOrdersController : ControllerBase
     {

@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using SimpleERP.Abstract;
+using SimpleERP.Data.Entities.Auth;
+using SimpleERP.Models.API.Employe;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using SimpleERP.Models.Abstract;
-using SimpleERP.Models.API.Employe;
-using SimpleERP.Models.Context;
-using SimpleERP.Models.Entities.Auth;
 
 namespace SimpleERP.Controllers.API
 {
@@ -16,9 +11,9 @@ namespace SimpleERP.Controllers.API
     [ApiController]
     public class APIEmployeOrdersController : ControllerBase
     {
-        private readonly IEmployeOrders _repository;
+        private readonly IEmployeOrdersRepository _repository;
 
-        public APIEmployeOrdersController(IEmployeOrders repository)
+        public APIEmployeOrdersController(IEmployeOrdersRepository repository)
         {
             _repository = repository;
         }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using SimpleERP.Models.Context;
+using SimpleERP.Data.Context;
 using System;
 using System.Net.Http;
 using System.Reflection;
