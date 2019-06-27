@@ -12,6 +12,6 @@ namespace SimpleERP.Data.Entities.WarehouseEntity
         public List<Stock> Products { get; set; }
         public string Name { get; set; }
         public List<Departament> Departaments { get; set; }
- 
+
     }
 }

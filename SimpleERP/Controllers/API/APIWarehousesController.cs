@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using SimpleERP.Abstract;
 using SimpleERP.Models.API.Warehouse;
 using SimpleERP.Data.Context;
 using SimpleERP.Data.Entities.WarehouseEntity;
+using System.Linq;
+using System.Threading.Tasks;
+using SimpleERP.Attributes;
 
 namespace SimpleERP.Controllers.API
 {
-    [Route("api/warehouse")]
+    [Route(BASE_ROUTE)]
     [APIAuthorize]
     [ApiController]
     public class APIWarehousesController : ControllerBase
     {
+
+        public const string BASE_ROUTE = "api/warehouse";
 
         private readonly IWarehouseRepository _repository;
 
@@ -80,33 +79,33 @@ namespace SimpleERP.Controllers.API
 
             await _repository.UpdateAsync(warehouse);
             return NoContent();
-    }
-
-    // POST: api/APIWarehouses
-    [HttpPost]
-    public async Task<IActionResult> PostWarehouse([FromBody] WarehouseModel model)
-    {
-        var warehouse = new Warehouse
-        {
-            Id = model.Id,
-            Name = model.Name,
-        };
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
         }
 
-        warehouse = await _repository.AddAsync(warehouse);
+        // POST: api/APIWarehouses
+        [HttpPost]
+        public async Task<IActionResult> PostWarehouse([FromBody] WarehouseModel model)
+        {
+            var warehouse = new Warehouse
+            {
+                Id = model.Id,
+                Name = model.Name,
+            };
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-        model.Id = warehouse.Id;
+            warehouse = await _repository.AddAsync(warehouse);
 
-        return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
-    }
+            model.Id = warehouse.Id;
+
+            return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
+        }
 
         [HttpPost("stocks")]
         public async Task<IActionResult> AddProductToWarehouse([FromBody] WarehouseModel model)
         {
-           
+
 
             return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
         }
@@ -114,33 +113,33 @@ namespace SimpleERP.Controllers.API
         [HttpGet("stocks")]
         public async Task<IActionResult> GEtAllWarehouseStocks(int warehouseId)
         {
-            
+
 
             return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
         }
 
         // DELETE: api/APIWarehouses/5
         [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteWarehouse([FromRoute] int id)
-    {
-        if (!ModelState.IsValid)
+        public async Task<IActionResult> DeleteWarehouse([FromRoute] int id)
         {
-            return BadRequest(ModelState);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var warehouse = await _repository.DeleteAsync(id);
+            if (warehouse == null)
+            {
+                return NotFound();
+            }
+
+            var model = new WarehouseModel
+            {
+                Id = warehouse.Id,
+                Name = warehouse.Name,
+            };
+
+            return Ok(model);
         }
-
-        var warehouse = await _repository.DeleteAsync(id);
-        if (warehouse == null)
-        {
-            return NotFound();
-        }
-
-        var model = new WarehouseModel
-        {
-            Id = warehouse.Id,
-            Name = warehouse.Name,
-        };
-
-        return Ok(model);
     }
-}
 }
