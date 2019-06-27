@@ -12,9 +12,9 @@ namespace SimpleERP.Controllers.API
     public class APIProductsController : ControllerBase
     {
 
-        API Authhorize Poves' Vezde
+        //API Authhorize Poves' Vezde
 
-        Promezutochnie sdelay normal'no
+        //Promezutochnie sdelay normal'no
 
         private readonly IProductRepository _repository;
 
