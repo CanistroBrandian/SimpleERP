@@ -124,5 +124,30 @@ namespace SimpleERP.Controllers.API
 
             return Ok(model);
         }
+
+
+        [HttpPost("orderproducts")]
+        public async Task<IActionResult> AddOrderWithProducts([FromBody] OrderProductModel model)
+        {
+
+            var orderProducts = new OrderProduct
+            {
+                ProductId = model.ProductId,
+                OrderId = model.OrderId
+            };
+            await _orderRepository.AddOrderWithProducts(orderProducts);
+            return CreatedAtAction("GetStock", orderProducts);
+        }
+
+        [HttpGet("orderproducts")]
+        public async Task<IActionResult> GetAllOrderProducts()
+        {
+
+            return Ok((await _orderRepository.GetAllOrderProducts()).Select(s => new OrderProductModel
+            {
+                ProductId = s.ProductId,
+                OrderId = s.OrderId
+            }));
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace SimpleERP.Abstract
 {
-    public interface IStockRepository :  ICommonRepository<Stock, int>
+    public interface IStockRepository 
     {
     }
 }

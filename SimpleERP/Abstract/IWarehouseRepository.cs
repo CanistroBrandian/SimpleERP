@@ -1,13 +1,13 @@
 ﻿using SimpleERP.Data.Entities.WarehouseEntity;
-using System;
+using SimpleERP.Models.API.Warehouse;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleERP.Abstract
 {
-    public interface IWarehouseRepository: ICommonRepository<Warehouse, int>
+    public interface IWarehouseRepository : ICommonRepository<Warehouse, int>
     {
-      
+        Task AddProductToWarehouse(Stock stock);
+        Task<List<Stock>> GetAllStocksAsync();
     }
 }

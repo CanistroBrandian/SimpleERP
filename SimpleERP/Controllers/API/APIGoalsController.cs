@@ -86,9 +86,9 @@ namespace SimpleERP.Controllers.API
                 return BadRequest();
             }
 
-           await _repository.UpdateAsync(goal);
+            await _repository.UpdateAsync(goal);
 
-           
+
 
             return NoContent();
         }
@@ -147,6 +147,6 @@ namespace SimpleERP.Controllers.API
             return Ok(model);
         }
 
-       
+
     }
 }

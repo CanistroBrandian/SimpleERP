@@ -2,7 +2,6 @@
 using SimpleERP.Abstract;
 using SimpleERP.Data.Context;
 using SimpleERP.Data.Entities.WarehouseEntity;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,9 +21,10 @@ namespace SimpleERP.Data.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Stock>> GetAllWarehouseStocks(int warhouseId)
+        public async Task<List<Stock>> GetAllStocksAsync()
         {
-           return await _context.Set<Stock>().AsNoTracking().Where(s => s.WarehouseId == warhouseId).ToListAsync();
+            return await _context.Set<Stock>().AsNoTracking().ToListAsync();
         }
+
     }
 }

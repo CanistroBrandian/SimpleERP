@@ -1,130 +1,130 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SimpleERP.Abstract;
-using SimpleERP.Data.Entities.Auth;
-using SimpleERP.Models.API.Employe;
-using System.Linq;
-using System.Threading.Tasks;
+﻿//using Microsoft.AspNetCore.Mvc;
+//using SimpleERP.Abstract;
+//using SimpleERP.Data.Entities.Auth;
+//using SimpleERP.Models.API.Employe;
+//using System.Linq;
+//using System.Threading.Tasks;
 
-namespace SimpleERP.Controllers.API
-{
-    [Route("api/employeorder")]
-    [ApiController]
-    public class APIEmployeOrdersController : ControllerBase
-    {
-        private readonly IEmployeOrdersRepository _repository;
+//namespace SimpleERP.Controllers.API
+//{
+//    [Route("api/employeorder")]
+//    [ApiController]
+//    public class APIEmployeOrdersController : ControllerBase
+//    {
+//        private readonly IEmployeOrdersRepository _repository;
 
-        public APIEmployeOrdersController(IEmployeOrdersRepository repository)
-        {
-            _repository = repository;
-        }
+//        public APIEmployeOrdersController(IEmployeOrdersRepository repository)
+//        {
+//            _repository = repository;
+//        }
 
-        // GET: api/APIEmployeOrders
-        [HttpGet]
-        public async Task<IActionResult> GetEmployeOrders()
-        {
-            return Ok((await _repository.GetAllAsync()).Select(s => new EmployeOrderModel
-            {
+//        // GET: api/APIEmployeOrders
+//        [HttpGet]
+//        public async Task<IActionResult> GetEmployeOrders()
+//        {
+//            return Ok((await _repository.GetAllAsync()).Select(s => new EmployeOrderModel
+//            {
 
-                EmployeId = s.EmployeId,
-                OrderId = s.OrderId
-            }));
-        }
+//                EmployeId = s.EmployeId,
+//                OrderId = s.OrderId
+//            }));
+//        }
 
-        // GET: api/APIEmployeOrders/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetEmployeOrder([FromRoute] int id)
-        {
-           
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+//        // GET: api/APIEmployeOrders/5
+//        [HttpGet("{id}")]
+//        public async Task<IActionResult> GetEmployeOrder([FromRoute] int id)
+//        {
 
-            var employeOrder = await _repository.GetSingleAsync(id);
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
 
-            if (employeOrder == null)
-            {
-                return NotFound();
-            }
+//            var employeOrder = await _repository.GetSingleAsync(id);
 
-            return Ok(new EmployeOrderModel
-            {
+//            if (employeOrder == null)
+//            {
+//                return NotFound();
+//            }
 
-                EmployeId = employeOrder.EmployeId,
-                OrderId = employeOrder.OrderId
-            });
-        }
+//            return Ok(new EmployeOrderModel
+//            {
 
-        // PUT: api/APIEmployeOrders/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutEmployeOrder([FromRoute] int id, [FromBody] EmployeOrderModel model)
-        {
-            var employeOrder = new EmployeOrder
-            {
-                EmployeId = model.EmployeId,
-                OrderId = model.OrderId
-            };
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+//                EmployeId = employeOrder.EmployeId,
+//                OrderId = employeOrder.OrderId
+//            });
+//        }
 
-            if (id != employeOrder.OrderId)
-            {
-                return BadRequest();
-            }
+//        // PUT: api/APIEmployeOrders/5
+//        [HttpPut("{id}")]
+//        public async Task<IActionResult> PutEmployeOrder([FromRoute] int id, [FromBody] EmployeOrderModel model)
+//        {
+//            var employeOrder = new EmployeOrder
+//            {
+//                EmployeId = model.EmployeId,
+//                OrderId = model.OrderId
+//            };
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
 
-            await _repository.UpdateAsync(employeOrder);
+//            if (id != employeOrder.OrderId)
+//            {
+//                return BadRequest();
+//            }
+
+//            await _repository.UpdateAsync(employeOrder);
 
 
 
-            return NoContent();
-        }
+//            return NoContent();
+//        }
 
-        // POST: api/APIEmployeOrders
-        [HttpPost]
-        public async Task<IActionResult> PostEmployeOrder([FromBody] EmployeOrderModel model)
-        {
-            var employeOrder = new EmployeOrder
-            {
-                EmployeId = model.EmployeId,
-                OrderId = model.OrderId
-            };
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+//        // POST: api/APIEmployeOrders
+//        [HttpPost]
+//        public async Task<IActionResult> PostEmployeOrder([FromBody] EmployeOrderModel model)
+//        {
+//            var employeOrder = new EmployeOrder
+//            {
+//                EmployeId = model.EmployeId,
+//                OrderId = model.OrderId
+//            };
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
 
-           await _repository.AddAsync(employeOrder);
-           
+//            await _repository.AddAsync(employeOrder);
 
-            return CreatedAtAction("GetEmployeOrder", new { id = employeOrder.OrderId }, employeOrder);
-        }
 
-        // DELETE: api/APIEmployeOrders/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteEmployeOrder([FromRoute] int id)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+//            return CreatedAtAction("GetEmployeOrder", new { id = employeOrder.OrderId }, employeOrder);
+//        }
 
-            var employeOrder = await _repository.DeleteAsync(id);
-            if (employeOrder == null)
-            {
-                return NotFound();
-            }
+//        // DELETE: api/APIEmployeOrders/5
+//        [HttpDelete("{id}")]
+//        public async Task<IActionResult> DeleteEmployeOrder([FromRoute] int id)
+//        {
+//            if (!ModelState.IsValid)
+//            {
+//                return BadRequest(ModelState);
+//            }
 
-            var model = new EmployeOrder
-            {
-                EmployeId = employeOrder.EmployeId,
-                OrderId = employeOrder.OrderId
-            };
+//            var employeOrder = await _repository.DeleteAsync(id);
+//            if (employeOrder == null)
+//            {
+//                return NotFound();
+//            }
 
-            return Ok(model);
-        }
+//            var model = new EmployeOrder
+//            {
+//                EmployeId = employeOrder.EmployeId,
+//                OrderId = employeOrder.OrderId
+//            };
 
-       
-    }
-}
+//            return Ok(model);
+//        }
+
+
+//    }
+//}

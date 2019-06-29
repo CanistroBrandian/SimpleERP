@@ -1,13 +1,9 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using SimpleERP.Helpers;
 using SimpleERP.Data.Entities.Auth;
+using SimpleERP.Helpers;
+using SimpleERP.Models.API.Auth;
 using SimpleERP.Models.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -16,13 +12,13 @@ namespace SimpleERP.Controllers.API
 {
     [Route("api/auth")]
     [ApiController]
-    public class APITokenController : ControllerBase
+    public class APIAuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
 
-        public APITokenController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager)
+        public APIAuthController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -30,10 +26,10 @@ namespace SimpleERP.Controllers.API
         }
        
         [HttpPost("login")]
-        public async Task<IActionResult> TokenAsync()
+        public async Task<IActionResult> TokenAsync(LoginModel model)
         {
-            var username = Request.Form["username"];
-            var password = Request.Form["password"];
+            var username = model.Login;
+            var password = model.Password;
 
             var identity = await GetIdentityAsync(username, password);
             
@@ -88,34 +84,44 @@ namespace SimpleERP.Controllers.API
             user.Adress = model.Adress;
             user.UserName = model.Email;
             user.Email = model.Email;
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
+            var pass = model.Password;
+            var passConfirm = model.PasswordConfirm;
+            if (pass.Equals(passConfirm))
             {
-                var identity = await GetIdentityAsync(user.UserName, model.Password);
-                if (identity == null)
+                var result = await _userManager.CreateAsync(user, pass);
+
+                if (result.Succeeded)
                 {
-                    return BadRequest("Invalid username or password.");
+                    var identity = await GetIdentityAsync(user.UserName, model.Password);
+                    if (identity == null)
+                    {
+                        return BadRequest("User is not active");
+                    }
+
+                    var jwt = AuthHelper.GetJWT(identity);
+
+                    var encodedJwt = AuthHelper.EncodeJWT(jwt);
+
+                    var response = new
+                    {
+                        access_token = encodedJwt,
+                        username = identity.Name
+                    };
+
+                    return Ok(response);
+
                 }
-
-                var jwt = AuthHelper.GetJWT(identity);
-                var encodedJwt = AuthHelper.EncodeJWT(jwt);
-
-                var response = new
+                else
                 {
-                    access_token = encodedJwt,
-                    username = identity.Name
-                };
-
-                return Ok(response);
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+                return BadRequest(ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage);
             }
             else
-            {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-            return BadRequest(ModelState.Values.FirstOrDefault()?.Errors.FirstOrDefault()?.ErrorMessage);
+                return BadRequest("Password and PasswordConfirm dont equal");
         }
 
 
@@ -123,7 +129,7 @@ namespace SimpleERP.Controllers.API
         private async Task<ClaimsIdentity> GetIdentityAsync(string username, string password)
         {
             User user = await _userManager.FindByNameAsync(username);
-            if (user == null || user.IsActive==false)// || user not active
+            if (user == null )// || user not active
             {
                 return null;
             }

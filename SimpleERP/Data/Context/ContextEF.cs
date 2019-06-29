@@ -12,7 +12,7 @@ namespace SimpleERP.Data.Context
     {
         public ContextEF(DbContextOptions<ContextEF> options) : base(options)
         {
-           // Database.EnsureCreated();
+            // Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -72,7 +72,7 @@ namespace SimpleERP.Data.Context
             modelBuilder.Entity<User>();
         }
 
-      
+
 
         public DbSet<Client> Clients { get; set; }
         public DbSet<ClientOrder> ClientOrders { get; set; }

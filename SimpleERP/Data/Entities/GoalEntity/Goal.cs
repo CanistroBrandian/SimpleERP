@@ -1,9 +1,6 @@
 ﻿using SimpleERP.Abstract;
 using SimpleERP.Data.Entities.Auth;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SimpleERP.Data.Entities.GoalEntity
 
@@ -19,6 +16,6 @@ namespace SimpleERP.Data.Entities.GoalEntity
         public string AssigneId { get; set; }
         public Manager Reporter { get; set; }
         public string ReporterId { get; set; }
-        
+
     }
 }

@@ -1,15 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using SimpleERP.Abstract;
+﻿using Microsoft.AspNetCore.Mvc;
 using SimpleERP.Data.Context;
-using SimpleERP.Data.Entities;
-using SimpleERP.Data.Entities.Auth;
-using SimpleERP.Data.Entities.GoalEntity;
-using SimpleERP.Data.Entities.WarehouseEntity;
-using System;
-using System.Threading.Tasks;
 
 namespace SimpleERP.Controllers
 {

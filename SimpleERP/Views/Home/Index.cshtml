@@ -6,6 +6,7 @@
 @if (User.Identity.IsAuthenticated)
 {
     <p>@User.Identity.Name</p>
+    <p>@User.IsInRole("Supervisor")</p>
 
     <form method="post" asp-controller="Account" asp-action="LogOff">
         <input type="submit" value="Выход" />

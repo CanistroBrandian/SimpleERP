@@ -1,12 +1,6 @@
-﻿using SimpleERP.Abstract;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SimpleERP.Data.Entities.WarehouseEntity
+﻿namespace SimpleERP.Data.Entities.WarehouseEntity
 {
-    public class Stock 
+    public class Stock
     {
         public int ProductId { get; set; }
         public Product Product { get; set; }

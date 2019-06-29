@@ -14,10 +14,12 @@ namespace SimpleERP.Identity
 
         public ERPUserClaimsPrincipalFactory(UserManager<User> userManager, IOptions<IdentityOptions> optionsAccessor) : base(userManager, optionsAccessor)
         {
+          
         }
 
         public override async Task<ClaimsPrincipal> CreateAsync(User user)
         {
+            
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -43,6 +45,10 @@ namespace SimpleERP.Identity
             {
                 identity.AddClaim(new Claim(ClaimsIdentity.DefaultRoleClaimType, string.Join(",", roles)));
             }
+            //else if (user is Client)
+            //{
+            //    roles.Add(nameof(Client));
+            //}
 
             return new ClaimsPrincipal(identity);
         }

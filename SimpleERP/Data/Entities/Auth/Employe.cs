@@ -1,7 +1,6 @@
 ﻿using SimpleERP.Abstract;
 using SimpleERP.Data.Entities.GoalEntity;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SimpleERP.Data.Entities.Auth
 {

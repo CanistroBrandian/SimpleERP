@@ -1,14 +1,13 @@
 ﻿using SimpleERP.Data.Entities.Auth;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleERP.Abstract
 {
-   public interface IEmployeRepository :  ICommonRepository<Employe, string>
+    public interface IEmployeRepository : ICommonRepository<Employe, string>
     {
-      
-      
+        Task AddClientToEmploye(EmployeClient employeClient);
+        Task<List<EmployeClient>> GetAllEmployeClients();
+
     }
 }

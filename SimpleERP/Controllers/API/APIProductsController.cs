@@ -130,6 +130,6 @@ namespace SimpleERP.Controllers.API
             return Ok(model);
         }
 
-        
+
     }
 }

@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SimpleERP.Abstract;
-using SimpleERP.Models.API.Warehouse;
-using SimpleERP.Data.Context;
+using SimpleERP.Attributes;
 using SimpleERP.Data.Entities.WarehouseEntity;
+using SimpleERP.Models.API.Warehouse;
 using System.Linq;
 using System.Threading.Tasks;
-using SimpleERP.Attributes;
 
 namespace SimpleERP.Controllers.API
 {
@@ -99,23 +98,7 @@ namespace SimpleERP.Controllers.API
 
             model.Id = warehouse.Id;
 
-            return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
-        }
-
-        [HttpPost("stocks")]
-        public async Task<IActionResult> AddProductToWarehouse([FromBody] WarehouseModel model)
-        {
-
-
-            return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
-        }
-
-        [HttpGet("stocks")]
-        public async Task<IActionResult> GEtAllWarehouseStocks(int warehouseId)
-        {
-
-
-            return CreatedAtAction("GetOrder", new { id = warehouse.Id }, model);
+            return CreatedAtAction("GetWarehouse", new { id = warehouse.Id }, model);
         }
 
         // DELETE: api/APIWarehouses/5
@@ -141,5 +124,32 @@ namespace SimpleERP.Controllers.API
 
             return Ok(model);
         }
+
+
+        [HttpPost("stocks")]
+        public async Task<IActionResult> AddProductToWarehouse([FromBody] StockModel model)
+        {
+
+            var stock = new Stock
+            {
+                ProductId = model.ProductId,
+                WarehouseId = model.WarehouseId
+            };
+            await _repository.AddProductToWarehouse(stock);
+            return CreatedAtAction("GetStock", model);
+        }
+
+        [HttpGet("stocks")]
+        public async Task<IActionResult> GEtAllWarehouseStocks()
+        {
+
+              return Ok((await _repository.GetAllStocksAsync()).Select(s => new StockModel
+            {
+                ProductId = s.ProductId,
+                WarehouseId = s.WarehouseId
+            }));
+        }
+
+
     }
 }

@@ -35,7 +35,7 @@ namespace SimpleERP.Helpers
 
         public static TokenValidationParameters BuildTokenValidationParameters()
         {
-           return new TokenValidationParameters
+            return new TokenValidationParameters
             {
                 // укзывает, будет ли валидироваться издатель при валидации токена
                 ValidateIssuer = true,

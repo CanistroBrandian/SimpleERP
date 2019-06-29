@@ -1,9 +1,4 @@
-﻿using SimpleERP.Abstract;
-using SimpleERP.Data.Entities.OrderEntity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using SimpleERP.Data.Entities.OrderEntity;
 
 namespace SimpleERP.Data.Entities.Auth
 {
