@@ -2,11 +2,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SimpleERP.Models.Entities.Auth;
+using SimpleERP.Data.Entities.Auth;
 using SimpleERP.Models.ViewModels;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SimpleERP.Controllers
@@ -96,9 +93,14 @@ namespace SimpleERP.Controllers
                 return View(model);
             }
             var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
+            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password)) //|| user not active
             {
                 ModelState.AddModelError("", "Неправильный логин и (или) пароль");
+                return View(model);
+            }
+            if (user.IsActive == false)
+            {
+                ModelState.AddModelError("", "Доступ запрещен. Аккаунт не активирован");
                 return View(model);
             }
 

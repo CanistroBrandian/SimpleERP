@@ -6,32 +6,39 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SimpleERP.Abstract;
+using SimpleERP.Data.Context;
+using SimpleERP.Data.Entities.Auth;
+using SimpleERP.Data.Repository;
 using SimpleERP.Helpers;
 using SimpleERP.Identity;
-using SimpleERP.Models.Abstract;
-using SimpleERP.Models.Concreate;
-using SimpleERP.Models.Context;
-using SimpleERP.Models.Entities.Auth;
 using System;
+using System.Threading.Tasks;
 
 namespace SimpleERP
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+             .SetBasePath(env.ContentRootPath)
+             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+             .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+             .AddEnvironmentVariables();
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
-            string connection = Configuration.GetConnectionString("SimpleERPContextConnection");
-            services.AddDbContext<ContextEF>(options => options.UseSqlServer(connection));
+            ConfigureDbContext(services);
+
             services.AddIdentity<User, IdentityRole>(opts =>
             {
                 opts.Password.RequiredLength = 5;   // минимальная длина
@@ -59,7 +66,7 @@ namespace SimpleERP
                 options.Cookie.Name = "SimpleERP.Auth";
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromDays(7); // - 7 days "Remember me"
-                            options.LoginPath = "/Account/Login/";
+                options.LoginPath = "/Account/Login/";
                 options.AccessDeniedPath = "/";
             })
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -68,14 +75,13 @@ namespace SimpleERP
                 options.TokenValidationParameters = AuthHelper.BuildTokenValidationParameters();
             });
 
-            services.AddScoped<IEmployeRepository, EmployeRepository>();
+            InitializeApplicationServices(services);
             services.AddScoped<IUserClaimsPrincipalFactory<User>, ERPUserClaimsPrincipalFactory>();
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider service)
         {
             if (env.IsDevelopment())
             {
@@ -97,6 +103,65 @@ namespace SimpleERP
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //AddSupervisor(service).Wait();
+        }
+
+        protected virtual void ConfigureDbContext(IServiceCollection services)
+        {
+            string connection = Configuration.GetConnectionString("SimpleERPContextConnection");
+            services.AddDbContext<ContextEF>(options => options.UseSqlServer(connection)
+                                                               .ConfigureWarnings(w => w.Throw(RelationalEventId.QueryClientEvaluationWarning)));
+        }
+
+
+        protected virtual void InitializeApplicationServices(IServiceCollection services)
+        {
+            services.AddScoped<IEmployeRepository, EmployeRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IDepartamentRepository, DepartamentRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IGoalRepository, GoalRepository>();
+            services.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            services.AddScoped<IManagerRepository, ManagerRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>();
+        }
+
+        public async Task AddSupervisor(IServiceProvider serviceProvider)
+        {
+            var _roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var _userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+
+            string SupervisorRole = "Supervisor";
+
+            var roleCheck = await _roleManager.RoleExistsAsync(SupervisorRole);
+            if (!roleCheck)
+            {
+                //create the roles and seed them to the database  
+                await _roleManager.CreateAsync(new IdentityRole(SupervisorRole));
+            }
+            var admin = await _userManager.FindByEmailAsync("admin@mail.ru");
+            if (admin == null)
+            {
+                var newAdmin = new User
+                {
+                    NameFirst = "admin",
+                    NameLast = "admin",
+                    Phone = "37529144",
+                    Adress = "adress",
+                    Email = "admin@mail.ru",
+                    IsActive = true,
+                    UserName = "admin@mail.ru",
+
+                };
+                string pass = "looser";
+                var result = await _userManager.CreateAsync(newAdmin, pass);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(newAdmin, SupervisorRole);
+                }
+            }
         }
     }
 }

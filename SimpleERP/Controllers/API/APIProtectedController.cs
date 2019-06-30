@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SimpleERP.Attributes;
+using SimpleERP.Data.Entities.Auth;
 using SimpleERP.Extensions;
 using SimpleERP.Helpers;
-using SimpleERP.Models.Entities.Auth;
 
 namespace SimpleERP.Controllers.API
 {
