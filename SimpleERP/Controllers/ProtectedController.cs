@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimpleERP.Data.Entities.Auth;
 using SimpleERP.Extensions;
@@ -9,45 +8,37 @@ namespace SimpleERP.Controllers
 {
     public class ProtectedController : Controller
     {
-        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize]
         public IActionResult GetUserName()
         {
             return Ok($"User name is {User.Identity.Name}");
         }
 
-        [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme)]
+        [Authorize]
         public IActionResult GetUserRoles()
         {
             return Ok($"User roles are {User.GetRoles()}");
         }
 
-        [Authorize(
-            AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme,
-            Roles = nameof(Employe))]
+        [Authorize(Roles = nameof(Employe))]
         public IActionResult EmployeCheck()
         {
             return Ok($"This is available only for Employee");
         }
 
-        [Authorize(
-            AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme,
-            Roles = nameof(Client))]
+        [Authorize(Roles = nameof(Client))]
         public IActionResult ClientCheck()
         {
             return Ok($"This is available only for Client");
         }
 
-        [Authorize(
-            AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme,
-            Roles = nameof(Manager))]
+        [Authorize(Roles = nameof(Manager))]
         public IActionResult ManagerCheck()
         {
             return Ok($"This is available only for Manager");
         }
 
-        [Authorize(
-            AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme,
-            Roles = AuthHelper.SUPERVISOR_ROLE)]
+        [Authorize(Roles = AuthHelper.SUPERVISOR_ROLE)]
         public IActionResult SupervisorCheck()
         {
             return Ok($"This is available only for Supervisor");

@@ -15,7 +15,6 @@ using SimpleERP.Data.Entities.Auth;
 using SimpleERP.Data.Repository;
 using SimpleERP.Helpers;
 using SimpleERP.Identity;
-using SimpleERP.Middlewares;
 using System;
 using System.Threading.Tasks;
 
@@ -56,11 +55,11 @@ namespace SimpleERP
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            services.AddAuthentication(options =>
             {
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = AuthHelper.BuildTokenValidationParameters();
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
             })
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
             {
@@ -69,14 +68,15 @@ namespace SimpleERP
                 options.ExpireTimeSpan = TimeSpan.FromDays(7); // - 7 days "Remember me"
                 options.LoginPath = "/Account/Login/";
                 options.AccessDeniedPath = "/";
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = AuthHelper.BuildTokenValidationParameters();
             });
-          
 
             InitializeApplicationServices(services);
-
             services.AddScoped<IUserClaimsPrincipalFactory<User>, ERPUserClaimsPrincipalFactory>();
-
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -96,7 +96,7 @@ namespace SimpleERP
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.AddDynamicSchemeAuthentication();
+            app.UseAuthentication();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -153,7 +153,7 @@ namespace SimpleERP
                     Email = "admin@mail.ru",
                     IsActive = true,
                     UserName = "admin@mail.ru",
-                    
+
                 };
                 string pass = "looser";
                 var result = await _userManager.CreateAsync(newAdmin, pass);
