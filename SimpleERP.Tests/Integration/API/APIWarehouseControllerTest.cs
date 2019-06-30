@@ -21,8 +21,12 @@ namespace SimpleERP.Tests.Integration.API
         [Fact]
         public async Task GetAll_OK_Result_No_Items()
         {
+            // Arrange
+            await SeedSupervisor();
+            await SignInAsAsync(Supervisor);
+
             // Act
-            var response = await _client.GetAsync($"{APIWarehousesController.BASE_ROUTE}");
+            var response = await _httpClient.GetAsync($"{APIWarehousesController.BASE_ROUTE}");
             var expectedResult = ConvertToJsonString(Array.Empty<object>());
 
             // Assert
@@ -35,6 +39,8 @@ namespace SimpleERP.Tests.Integration.API
         public async Task GetAll_OK_Result_Has_Items()
         {
             // Arrange
+            await SeedSupervisor();
+            await SignInAsAsync(Supervisor);
             for (int i = 0; i < 5; i++)
             {
                 await _warehouseRepository.AddAsync(new Warehouse
@@ -44,7 +50,7 @@ namespace SimpleERP.Tests.Integration.API
             }
 
             // Act
-            var response = await _client.GetAsync($"{APIWarehousesController.BASE_ROUTE}");
+            var response = await _httpClient.GetAsync($"{APIWarehousesController.BASE_ROUTE}");
             var expectedResult = ConvertToJsonString((await _warehouseRepository.GetAllAsync()).Select(f => new WarehouseModel
             {
                 Name = f.Name,

@@ -23,5 +23,16 @@ namespace SimpleERP.Data.Repository
         {
             return await _context.Set<EmployeClient>().AsNoTracking().ToListAsync();
         }
+
+        public async Task AddOrdersToEmploye(EmployeOrder employeOrder)
+        {
+            _context.Set<EmployeOrder>().Add(employeOrder);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<EmployeOrder>> GetAllOrdersOfEmploye()
+        {
+            return await _context.Set<EmployeOrder>().AsNoTracking().ToListAsync();
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace SimpleERP.Controllers.API
         [HttpPost("login")]
         public async Task<IActionResult> TokenAsync(LoginModel model)
         {
-            var username = model.Login;
+            var username = model.UserName;
             var password = model.Password;
 
             var identity = await GetIdentityAsync(username, password);

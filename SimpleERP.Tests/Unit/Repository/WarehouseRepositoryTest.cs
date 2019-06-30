@@ -31,16 +31,8 @@ namespace SimpleERP.Tests.Unit.Repository
         [Fact]
         public async Task GetAllWarehouses()
         {
-
             // arrange
-            using (var context = new ContextEF(_dbContextOptions))
-            {
-                IWarehouseRepository repository = new WarehouseRepository(context);
-                await repository.AddAsync(new Warehouse
-                {
-                    Name = "Test Warehouse"
-                });
-            }
+            var warehouse = CreateWarehouseInDB();
             // act
             List<Warehouse> results = null;
             using (var context = new ContextEF(_dbContextOptions))
@@ -52,7 +44,6 @@ namespace SimpleERP.Tests.Unit.Repository
 
             // assert
             Assert.Equal(1, count);
-            Assert.Equal("Test Warehouse", results.First().Name);
         }
 
 
@@ -60,27 +51,18 @@ namespace SimpleERP.Tests.Unit.Repository
         public async Task GetWarehouseById()
         {
             // arrange
-            using (var context = new ContextEF(_dbContextOptions))
-            {
-                IWarehouseRepository repository = new WarehouseRepository(context);
-                await repository.AddAsync(new Warehouse
-                {
-                    Id = 1,
-                    Name = "Test Warehouse"
-                });
-            }
+            var warehouse = CreateWarehouseInDB();
 
             // act
-
             Warehouse result = null;
             using (var context = new ContextEF(_dbContextOptions))
             {
                 IWarehouseRepository repository = new WarehouseRepository(context);
-                result = await repository.GetSingleAsync(1);
+                result = await repository.GetSingleAsync(warehouse.Id);
             }
 
             // assert
-            Assert.Equal(1, result.Id);
+            Assert.Equal(warehouse.Id, result.Id);
         }
 
 
@@ -88,17 +70,16 @@ namespace SimpleERP.Tests.Unit.Repository
         public async Task CreateWarehouse()
         {
             // arrange
-
+            var warehouse = new Warehouse
+            {
+                Name = "Test Warehouse"
+            };
             // act
 
             using (var context = new ContextEF(_dbContextOptions))
             {
                 IWarehouseRepository repository = new WarehouseRepository(context);
-                await repository.AddAsync(new Warehouse
-                {
-                    Id = 1,
-                    Name = "Test Warehouse"
-                });
+                await repository.AddAsync(warehouse);
             }
 
             // assert
@@ -107,10 +88,10 @@ namespace SimpleERP.Tests.Unit.Repository
 
             using (var context = new ContextEF(_dbContextOptions))
             {
-                result = context.Set<Warehouse>().FirstOrDefault(s => s.Id == 1);
+                result = context.Set<Warehouse>().FirstOrDefault(s => s.Id == warehouse.Id);
             }
 
-            Assert.Equal(1, result.Id);
+            Assert.Equal(warehouse.Id, result.Id);
         }
 
 
@@ -118,15 +99,9 @@ namespace SimpleERP.Tests.Unit.Repository
         public async Task UpdateWarehouse()
         {
             // arranges
-            using (var context = new ContextEF(_dbContextOptions))
-            {
-                context.Set<Warehouse>().Add(new Warehouse
-                {
-                    Id = 1,
-                    Name = "Test Warehouse"
-                });
-                context.SaveChanges();
-            }
+
+            var warehouse = CreateWarehouseInDB();
+            string newName = warehouse.Name + " New Name";
 
             // act
 
@@ -135,8 +110,8 @@ namespace SimpleERP.Tests.Unit.Repository
                 IWarehouseRepository repository = new WarehouseRepository(context);
                 await repository.UpdateAsync(new Warehouse
                 {
-                    Name = "New Name",
-                    Id = 1
+                    Id = warehouse.Id,
+                    Name = newName,
                 });
             }
 
@@ -144,9 +119,9 @@ namespace SimpleERP.Tests.Unit.Repository
 
             using (var context = new ContextEF(_dbContextOptions))
             {
-                var warehouseFromDb = context.Set<Warehouse>().FirstOrDefault(s => s.Id == 1);
-                Assert.NotEqual("Test Warehouse", warehouseFromDb.Name);
-                Assert.Equal("New Name", warehouseFromDb.Name);
+                var warehouseFromDb = context.Set<Warehouse>().FirstOrDefault(s => s.Id == warehouse.Id);
+                Assert.NotEqual(warehouse.Name, warehouseFromDb.Name);
+                Assert.Equal(newName, warehouseFromDb.Name);
             }
         }
 
@@ -154,29 +129,21 @@ namespace SimpleERP.Tests.Unit.Repository
         public async Task DeleteWarehouse()
         {
             // arranges
-            using (var context = new ContextEF(_dbContextOptions))
-            {
-                context.Set<Warehouse>().Add(new Warehouse
-                {
-                    Id = 1,
-                    Name = "Test Warehouse"
-                });
-                context.SaveChanges();
-            }
+            var warehouse = CreateWarehouseInDB();
 
             // act
 
             using (var context = new ContextEF(_dbContextOptions))
             {
                 IWarehouseRepository repository = new WarehouseRepository(context);
-                await repository.DeleteAsync(1);
+                await repository.DeleteAsync(warehouse.Id);
             }
 
             // assert
 
             using (var context = new ContextEF(_dbContextOptions))
             {
-                var warehouseFromDb = context.Set<Warehouse>().FirstOrDefault(s => s.Id == 1);
+                var warehouseFromDb = context.Set<Warehouse>().FirstOrDefault(s => s.Id == warehouse.Id);
                 Assert.Null(warehouseFromDb);
             }
         }
@@ -186,6 +153,19 @@ namespace SimpleERP.Tests.Unit.Repository
             using (var context = new ContextEF(_dbContextOptions))
             {
                 context.Database.EnsureDeleted();
+            }
+        }
+        private Warehouse CreateWarehouseInDB()
+        {
+            using (var context = new ContextEF(_dbContextOptions))
+            {
+                var warehouse = new Warehouse
+                {
+                    Name = "Warehouse1"
+                };
+                context.Set<Warehouse>().Add(warehouse);
+                context.SaveChanges();
+                return warehouse;
             }
         }
     }

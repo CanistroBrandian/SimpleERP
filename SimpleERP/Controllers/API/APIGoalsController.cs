@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SimpleERP.Controllers.API
 {
     [Route("api/goal")]
-    [APIAuthorize]
+    [APIAuthorize(Roles ="Manager")]
     [ApiController]
     public class APIGoalsController : ControllerBase
     {

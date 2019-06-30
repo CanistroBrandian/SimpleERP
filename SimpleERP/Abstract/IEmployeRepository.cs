@@ -8,6 +8,8 @@ namespace SimpleERP.Abstract
     {
         Task AddClientToEmploye(EmployeClient employeClient);
         Task<List<EmployeClient>> GetAllEmployeClients();
+        Task AddOrdersToEmploye(EmployeOrder employeOrder);
+        Task<List<EmployeOrder>> GetAllOrdersOfEmploye();
 
     }
 }

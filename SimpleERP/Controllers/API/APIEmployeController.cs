@@ -20,7 +20,7 @@ namespace SimpleERP.Controllers.API
             _repository = repository;
         }
 
-        [HttpPost("employeclients")]
+        [HttpPost("clients")]
         public async Task<IActionResult> AddClientToEmploye([FromBody] EmployeClientModel model)
         {
 
@@ -33,7 +33,7 @@ namespace SimpleERP.Controllers.API
             return CreatedAtAction("GetEmployeClients", employeClient);
         }
 
-        [HttpGet("employeclients")]
+        [HttpGet("clients")]
         public async Task<IActionResult> GetAllEmployeClients()
         {
 
@@ -43,6 +43,30 @@ namespace SimpleERP.Controllers.API
                 ClientId = s.ClientId
             }));
         }
+
+        [HttpPost("orders")]
+        public async Task<IActionResult> AddOrdersToEmploye([FromBody] EmployeOrderModel model)
+        {
+
+            var employeOrder = new EmployeOrder
+            {
+                EmployeId = model.EmployeId,
+                OrderId = model.OrderId
+            };
+            await _repository.AddOrdersToEmploye(employeOrder);
+            return CreatedAtAction("GetEmployeOrders", employeOrder);
+        }
+
+        [HttpGet("orders")]
+        public async Task<IActionResult> GetAllOrdersOfEmploye()
+        {
+
+            return Ok((await _repository.GetAllOrdersOfEmploye()).Select(s => new EmployeOrderModel
+            {
+                EmployeId = s.EmployeId,
+                OrderId = s.OrderId
+            }));
+        }
+
     }
 }
-//}

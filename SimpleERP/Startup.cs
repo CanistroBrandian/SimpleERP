@@ -104,7 +104,7 @@ namespace SimpleERP
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            AddSupervisor(service).Wait();
+            //AddSupervisor(service).Wait();
         }
 
         protected virtual void ConfigureDbContext(IServiceCollection services)
