@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleERP.Helpers;
 using SimpleERP.Identity;
+using SimpleERP.Middlewares.Extensions;
 using SimpleERP.Models.Abstract;
 using SimpleERP.Models.Concreate;
 using SimpleERP.Models.Context;
@@ -83,10 +84,10 @@ namespace SimpleERP
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
 
+            app.ConfigureExceptionHandler();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -97,6 +98,7 @@ namespace SimpleERP
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
         }
     }
 }
