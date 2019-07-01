@@ -24,7 +24,7 @@ namespace SimpleERP.Controllers.API
         [HttpGet]
         public async Task<ActionResult> GetGoals()
         {
-            return Ok((await _repository.GetAllAsync()).Select(s => new Goal
+            return Ok((await _repository.GetAllAsync()).Select(s => new GoalModel
             {
                 Name = s.Name,
                 Description = s.Description,

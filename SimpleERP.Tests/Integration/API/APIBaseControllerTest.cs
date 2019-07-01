@@ -78,10 +78,10 @@ namespace SimpleERP.Tests.Integration.API
             var context = (ContextEF)_server.Host.Services.GetService(typeof(ContextEF));
             var departament = new Departament
             {
-                Name = "Department1",
+                Name = $"{nameof(Employe)}'s Department",
                 Warehouse = new Warehouse
                 {
-                    Name = "Warehouse2",
+                    Name = $"{nameof(Employe)}'s Department Warehouse",
                 }
             };
             context.Set<Departament>().Add(departament);
@@ -106,10 +106,10 @@ namespace SimpleERP.Tests.Integration.API
             var context = (ContextEF)_server.Host.Services.GetService(typeof(ContextEF));
             var departament = new Departament
             {
-                Name = "Department1",
+                Name = $"{nameof(Manager)}'s Department",
                 Warehouse = new Warehouse
                 {
-                    Name = "Warehouse2",
+                    Name = $"{nameof(Manager)}'s Department Warehouse",
                 }
             };
             context.Set<Departament>().Add(departament);
@@ -132,15 +132,6 @@ namespace SimpleERP.Tests.Integration.API
         {
             var _userManager = (UserManager<User>)_server.Host.Services.GetService(typeof(UserManager<User>));
             var context = (ContextEF)_server.Host.Services.GetService(typeof(ContextEF));
-            var departament = new Departament
-            {
-                Name = "Department1",
-                Warehouse = new Warehouse
-                {
-                    Name = "Warehouse2",
-                }
-            };
-            context.Set<Departament>().Add(departament);
             context.SaveChanges();
             Client = new Client
             {
