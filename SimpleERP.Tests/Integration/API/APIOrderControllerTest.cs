@@ -1,7 +1,7 @@
 ﻿using SimpleERP.Abstract;
 using SimpleERP.Controllers.API;
-using SimpleERP.Data.Entities.WarehouseEntity;
-using SimpleERP.Models.API.Warehouse;
+using SimpleERP.Data.Entities.OrderEntity;
+using SimpleERP.Models.API.Order;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,13 +9,13 @@ using Xunit;
 
 namespace SimpleERP.Tests.Integration.API
 {
-    public class APIWarehouseControllerTest : APIBaseControllerTest
+    public class APIOrderControllerTest : APIBaseControllerTest
     {
-        private readonly IWarehouseRepository _warehouseRepository;
+        private readonly IOrderRepository _orderRepository;
 
-        public APIWarehouseControllerTest() : base()
+        public APIOrderControllerTest() : base()
         {
-            _warehouseRepository = (IWarehouseRepository)_server.Host.Services.GetService(typeof(IWarehouseRepository));
+            _orderRepository = (IOrderRepository)_server.Host.Services.GetService(typeof(IOrderRepository));
         }
 
         [Fact]
@@ -23,11 +23,11 @@ namespace SimpleERP.Tests.Integration.API
         {
             // Arrange
             await SeedSupervisor();
-           
+
             await SignInAsAsync(Supervisor);
 
             // Act
-            var response = await _httpClient.GetAsync($"{APIWarehousesController.BASE_ROUTE}");
+            var response = await _httpClient.GetAsync($"{APIOrdersController.BASE_ROUTE}");
             var expectedResult = ConvertToJsonString(Array.Empty<object>());
 
             // Assert
@@ -44,17 +44,20 @@ namespace SimpleERP.Tests.Integration.API
             await SignInAsAsync(Supervisor);
             for (int i = 0; i < 5; i++)
             {
-                await _warehouseRepository.AddAsync(new Warehouse
+                await _orderRepository.AddAsync(new Order
                 {
-                    Name = $"Warehouse {i + 1}"
-                });
+                    Information = $"Order {i + 1}",
+                    Status=false
+
+                });;
             }
 
             // Act
-            var response = await _httpClient.GetAsync($"{APIWarehousesController.BASE_ROUTE}");
-            var expectedResult = ConvertToJsonString((await _warehouseRepository.GetAllAsync()).Select(f => new WarehouseModel
+            var response = await _httpClient.GetAsync($"{APIOrdersController.BASE_ROUTE}");
+            var expectedResult = ConvertToJsonString((await _orderRepository.GetAllAsync()).Select(f => new OrderModel
             {
-                Name = f.Name,
+                Information = f.Information,
+                Status = f.Status,
                 Id = f.Id
             }));
 
@@ -65,4 +68,5 @@ namespace SimpleERP.Tests.Integration.API
         }
 
     }
+    
 }

@@ -1,7 +1,7 @@
 ﻿using SimpleERP.Abstract;
 using SimpleERP.Controllers.API;
 using SimpleERP.Data.Entities.WarehouseEntity;
-using SimpleERP.Models.API.Warehouse;
+using SimpleERP.Models.API.Product;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,13 +9,13 @@ using Xunit;
 
 namespace SimpleERP.Tests.Integration.API
 {
-    public class APIWarehouseControllerTest : APIBaseControllerTest
+    public class APIProductControllerTest : APIBaseControllerTest
     {
-        private readonly IWarehouseRepository _warehouseRepository;
+        private readonly IProductRepository _productRepository;
 
-        public APIWarehouseControllerTest() : base()
+        public APIProductControllerTest() : base()
         {
-            _warehouseRepository = (IWarehouseRepository)_server.Host.Services.GetService(typeof(IWarehouseRepository));
+            _productRepository = (IProductRepository)_server.Host.Services.GetService(typeof(IProductRepository));
         }
 
         [Fact]
@@ -23,11 +23,11 @@ namespace SimpleERP.Tests.Integration.API
         {
             // Arrange
             await SeedSupervisor();
-           
+
             await SignInAsAsync(Supervisor);
 
             // Act
-            var response = await _httpClient.GetAsync($"{APIWarehousesController.BASE_ROUTE}");
+            var response = await _httpClient.GetAsync($"{APIProductsController.BASE_ROUTE}");
             var expectedResult = ConvertToJsonString(Array.Empty<object>());
 
             // Assert
@@ -44,15 +44,15 @@ namespace SimpleERP.Tests.Integration.API
             await SignInAsAsync(Supervisor);
             for (int i = 0; i < 5; i++)
             {
-                await _warehouseRepository.AddAsync(new Warehouse
+                await _productRepository.AddAsync(new Product
                 {
-                    Name = $"Warehouse {i + 1}"
+                    Name = $"Product {i + 1}"
                 });
             }
 
             // Act
-            var response = await _httpClient.GetAsync($"{APIWarehousesController.BASE_ROUTE}");
-            var expectedResult = ConvertToJsonString((await _warehouseRepository.GetAllAsync()).Select(f => new WarehouseModel
+            var response = await _httpClient.GetAsync($"{APIProductsController.BASE_ROUTE}");
+            var expectedResult = ConvertToJsonString((await _productRepository.GetAllAsync()).Select(f => new ProductModel
             {
                 Name = f.Name,
                 Id = f.Id

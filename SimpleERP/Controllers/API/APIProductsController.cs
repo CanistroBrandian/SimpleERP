@@ -7,15 +7,11 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Controllers.API
 {
-    [Route("api/product")]
+    [Route(BASE_ROUTE)]
     [ApiController]
     public class APIProductsController : ControllerBase
     {
-
-        //API Authhorize Poves' Vezde
-
-        //Promezutochnie sdelay normal'no
-
+        public const string BASE_ROUTE = "api/product";
         private readonly IProductRepository _repository;
 
         public APIProductsController(IProductRepository repository)
