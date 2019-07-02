@@ -12,14 +12,11 @@ namespace SimpleERP.Tests.Integration.API
     public class APIGoalControllerTest : APIBaseControllerTest
     {
         private readonly IGoalRepository _goalRepository;
-        private readonly IManagerRepository _managerRepository;
-        private readonly IEmployeRepository _employeRepository;
+
 
         public APIGoalControllerTest() : base()
         {
             _goalRepository = (IGoalRepository)_server.Host.Services.GetService(typeof(IGoalRepository));
-            _managerRepository = (IManagerRepository)_server.Host.Services.GetService(typeof(IManagerRepository));
-            _employeRepository = (IEmployeRepository)_server.Host.Services.GetService(typeof(IEmployeRepository));
         }
 
         [Fact]
