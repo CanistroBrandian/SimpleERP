@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Controllers.API
 {
-    [Route("api/goal")]
+    [Route(BASE_ROUTE)]
     [APIAuthorize(Roles ="Manager")]
     [ApiController]
     public class APIGoalsController : ControllerBase
     {
         private readonly IGoalRepository _repository;
-
+        public const string BASE_ROUTE = "api/goal";
         public APIGoalsController(IGoalRepository repository)
         {
             _repository = repository;

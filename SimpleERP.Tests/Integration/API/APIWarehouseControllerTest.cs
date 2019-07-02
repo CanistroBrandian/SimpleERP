@@ -23,6 +23,7 @@ namespace SimpleERP.Tests.Integration.API
         {
             // Arrange
             await SeedSupervisor();
+           
             await SignInAsAsync(Supervisor);
 
             // Act

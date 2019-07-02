@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace SimpleERP.Controllers.API
 {
-    [Route("api/order")]
+    [Route(BASE_ROUTE)]
     [APIAuthorize]
     [ApiController]
     public class APIOrdersController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
-
+        public const string BASE_ROUTE = "api/order";
         public APIOrdersController(IOrderRepository repository)
         {
             _orderRepository = repository;
