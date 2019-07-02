@@ -19,6 +19,24 @@ namespace SimpleERP.Controllers.API
             _userManager = userManager;
         }
 
+        /// <summary>
+        /// Update product by id
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PUT /active
+        ///     {
+        ///        "email":"employe@mail.ru",
+        ///        "isActive" : true
+        ///     }
+        /// </remarks>
+        /// <param name="model"></param>
+        /// <returns>Changes field isActive </returns>
+        /// <response code="200">Return model of user</response>
+        /// <response code="404">Not found username or invalid data</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [APIAuthorize(Roles = AuthHelper.SUPERVISOR_ROLE)]
         [HttpPut("activate")]
         public async Task<ActionResult> ChangeActive(ChangeActivationModel model)
@@ -31,115 +49,7 @@ namespace SimpleERP.Controllers.API
 
             user.IsActive = model.IsActive.Value;
             await _userManager.UpdateAsync(user);
-            return Ok();
+            return Ok(user);
         }
-
-
-       
-
-
-        //// GET: api/APIEmployeClient
-        //[HttpGet]
-        //public async Task<IActionResult> GetEmployeClients()
-        //{
-        //    return Ok((await _repository.GetAllAsync()).Select(s => new EmployeClient
-        //    {
-        //        ClientId = s.ClientId,
-        //        EmployeId = s.EmployeId
-        //    }));
-        //}
-
-        //// GET: api/APIEmployeClient/5
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetEmployeClient([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var employeClient = await _repository.GetSingleAsync(id);
-
-        //    if (employeClient == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return Ok(new EmployeClientModel
-        //    {
-        //        ClientId = employeClient.ClientId,
-        //        EmployeId = employeClient.EmployeId
-        //    });
-        //}
-
-        //// PUT: api/APIEmployeClient/5
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutEmployeClient([FromRoute] string id, [FromBody] EmployeClientModel model)
-        //{
-        //    var employeClient = new EmployeClient
-        //    {
-        //        ClientId = model.ClientId,
-        //        EmployeId = model.EmployeId
-        //    };
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    if (id != employeClient.ClientId)
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    await _repository.UpdateAsync(employeClient);
-
-
-
-        //    return NoContent();
-        //}
-
-        //// POST: api/APIEmployeClient
-        //[HttpPost]
-        //public async Task<IActionResult> PostEmployeClient([FromBody] EmployeClientModel model)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-        //    var employeClient = new EmployeClient
-        //    {
-        //        ClientId = model.ClientId,
-        //        EmployeId = model.EmployeId
-        //    };
-
-        //    await _repository.AddAsync(employeClient);
-
-
-        //    return CreatedAtAction("GetEmployeClient", new { id = employeClient.EmployeId }, employeClient);
-        //}
-
-        //// DELETE: api/APIEmployeClient/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteEmployeClient([FromRoute] int id)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    var employeClient = await _repository.DeleteAsync(id);
-        //    if (employeClient == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var model = new EmployeClient
-        //    {
-        //        ClientId = employeClient.ClientId,
-        //        EmployeId = employeClient.EmployeId
-        //    };
-
-        //    return Ok(model);
-        //}
     }
 }

@@ -16,6 +16,8 @@ using SimpleERP.Data.Repository;
 using SimpleERP.Helpers;
 using SimpleERP.Identity;
 using System;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 
@@ -83,7 +85,12 @@ namespace SimpleERP
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Swashbuckle.AspNetCore.Swagger.Info { Title = "My API", Version = "v1" });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
+
+          
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

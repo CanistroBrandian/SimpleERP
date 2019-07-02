@@ -24,16 +24,33 @@ namespace SimpleERP.Controllers.API
             _roleManager = roleManager;
             _signInManager = signInManager;
         }
-       
+        /// <summary>
+        /// User authorization
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /login
+        ///     {
+        ///        "userName": "admin@mail.ru",
+        ///        "password": "looser"       
+        ///     }
+        /// </remarks>
+        /// <param name="model"></param>
+        /// <returns> Generates JWT and validates it with the data entered</returns>
+        /// <response code="200">Returns the JWT and username</response>
+        /// <response code="400">Invalid username or password or user is not active</response>            
         [HttpPost("login")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> TokenAsync(LoginModel model)
         {
             var username = model.UserName;
             var password = model.Password;
 
             var identity = await GetIdentityAsync(username, password);
-            
-            if (identity == null )
+
+            if (identity == null)
             {
                 return BadRequest("Invalid username or password or user is not active.");
             }
@@ -49,8 +66,32 @@ namespace SimpleERP.Controllers.API
 
             return Ok(response);
         }
-
+        /// <summary>
+        /// Registration new user
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///   POST /register
+        ///     {   
+        ///			   "NameFirst": "NameFirst",
+        ///            "NameLast": "NameLast",
+        ///            "Phone": "375291488",
+        ///            "Adress": "adres",
+        ///            "UserName": "User",
+        ///            "Email": "client@mail.ru",
+        ///            "password": "client",
+        ///            "passwordConfirm": "looser",
+        ///            "type": "Client"
+        ///     }
+        /// </remarks>
+        /// <param name="model"></param>
+        /// <returns> Generates JWT and validates it with the data entered</returns>
+        /// <response code="200">Returns the generated JWT and the login of the registered user</response>
+        /// <response code="400">If not valid date or Email is taken</response>                     
         [HttpPost("register")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
@@ -129,7 +170,7 @@ namespace SimpleERP.Controllers.API
         private async Task<ClaimsIdentity> GetIdentityAsync(string username, string password)
         {
             User user = await _userManager.FindByNameAsync(username);
-            if (user == null )// || user not active
+            if (user == null)// || user not active
             {
                 return null;
             }
@@ -141,7 +182,7 @@ namespace SimpleERP.Controllers.API
             }
 
             var claimsPrincipal = await _signInManager.CreateUserPrincipalAsync(user);
-        
+
             return claimsPrincipal?.Identity as ClaimsIdentity;
         }
 
