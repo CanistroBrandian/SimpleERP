@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SimpleERP.Controllers.API
 {
     [Route(BASE_ROUTE)]
-    [APIAuthorize(Roles ="Manager")]
+    [APIAuthorize(Roles = "Manager")]
     [ApiController]
     public class APIGoalsController : ControllerBase
     {
@@ -21,10 +21,16 @@ namespace SimpleERP.Controllers.API
         }
 
         // GET: api/APIGoals
+        /// <summary>
+        /// Get all goals of employee or manager if you roles is manager
+        /// </summary>
+        /// <returns> Returns models of goal</returns>
+        /// <response code="200">Returns models of goal</response>
+        [ProducesResponseType(200)]
         [HttpGet]
         public async Task<ActionResult> GetGoals()
         {
-            return Ok((await _repository.GetAllAsync()).Select(s => new Goal
+            return Ok((await _repository.GetAllAsync()).Select(s => new GoalModel
             {
                 Name = s.Name,
                 Description = s.Description,
@@ -36,6 +42,18 @@ namespace SimpleERP.Controllers.API
         }
 
         // GET: api/APIGoals/5
+
+        /// <summary>
+        /// Get goal by id if you roles is manager
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Returns model of goal</returns>
+        /// <response code="200">Returns model of goal</response>
+        /// <response code="400">Invalid Data</response>
+        /// <response code="404">Not found goal</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetGoal([FromRoute] int id)
         {
@@ -63,6 +81,31 @@ namespace SimpleERP.Controllers.API
         }
 
         // PUT: api/APIGoals/5
+        /// <summary>
+        /// Update goal by id if you roles is manager
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PUT /4
+        ///     {
+        ///        "id": 1,
+        ///        "name": "goal1",
+        ///        "description" : "description",
+        ///        "AssigneId":"AssigneId",
+        ///        "ReporterId": "ReporterId",
+        ///        "DateCreated":"2019-05-21T23:10:15",
+        ///        "DateFinished":"2020-05-21T23:10:15",
+        ///     }
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns>Returns new model of goal</returns>
+        /// <response code="200">Returns new model of goal</response>
+        /// <response code="404">Not found goal or invalid data</response>
+
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutGoal([FromRoute] int id, [FromBody] GoalModel model)
         {
@@ -88,12 +131,34 @@ namespace SimpleERP.Controllers.API
 
             await _repository.UpdateAsync(goal);
 
-
-
-            return NoContent();
+            return Ok(goal);
         }
 
         // POST: api/APIGoals
+        /// <summary>
+        /// Create new goal for employe if you roles is manager
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /
+        ///     {
+        ///        "id": 2,
+        ///        "name": "goal2",
+        ///        "description" : "description",
+        ///        "AssigneId":"AssigneId",
+        ///        "ReporterId": "ReporterId",
+        ///        "DateCreated":"2019-05-21T23:10:15",
+        ///        "DateFinished":"2020-05-21T23:10:15",
+        ///     }
+        /// </remarks>
+        /// <param name="model"></param>
+        /// <returns>Returns new model of goal</returns>
+        /// <response code="201">Returns new model of goal</response>
+        /// <response code="400">Invalid data</response>
+
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         [HttpPost]
         public async Task<IActionResult> PostGoal([FromBody] GoalModel model)
         {
@@ -119,6 +184,16 @@ namespace SimpleERP.Controllers.API
         }
 
         // DELETE: api/APIGoals/5
+        /// <summary>
+        /// Delete goal for employe if you roles is manager
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Returns the deleted model of goal</returns>
+        /// <response code="200">Returns the deleted model of goal</response>
+        /// <response code="400">Invalid data</response>
+
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteGoal([FromRoute] int id)
         {

@@ -20,6 +20,12 @@ namespace SimpleERP.Controllers.API
         }
 
         // GET: api/APIProducts
+        /// <summary>
+        /// Get all Products
+        /// </summary>
+        /// <returns> Returns models of products</returns>
+        /// <response code="200">Returns models of products</response>
+        [ProducesResponseType(200)]
         [HttpGet]
         public async Task<IActionResult> GetProducts()
         {
@@ -32,6 +38,17 @@ namespace SimpleERP.Controllers.API
         }
 
         // GET: api/APIProducts/5
+        /// <summary>
+        /// Get product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Returns model of product</returns>
+        /// <response code="200">Returns model of product</response>
+        /// <response code="400">Invalid Data</response>
+        /// <response code="404">Not found product</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProduct([FromRoute] int id)
         {
@@ -56,6 +73,26 @@ namespace SimpleERP.Controllers.API
         }
 
         // PUT: api/APIProducts/5
+        /// <summary>
+        /// Update product by id
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PUT /2
+        ///     {
+        ///        "id":1,
+        ///        "name":"name1",
+        ///        "description" : "description"
+        ///     }
+        /// </remarks>
+        /// <param name="id"></param>
+        /// <param name="model"></param>
+        /// <returns>Returns new model of product</returns>
+        /// <response code="200">Success</response>
+        /// <response code="400">Not found product or invalid data</response>
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProduct([FromRoute] int id, [FromBody] ProductModel model)
         {
@@ -74,15 +111,30 @@ namespace SimpleERP.Controllers.API
             {
                 return BadRequest();
             }
-
             await _repository.UpdateAsync(product);
-
-
-
-            return NoContent();
+            return Ok(product);
         }
 
         // POST: api/APIProducts
+        /// <summary>
+        /// Create new product
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /
+        ///     {
+        ///        "id":1,
+        ///        "name":"name1",
+        ///        "description" : "description"
+        ///     }
+        /// </remarks>
+        /// <param name="model"></param>
+        /// <returns> Return new model of product</returns>
+        /// <response code="201">Return new model of product</response>
+        /// <response code="400">Invalid data</response>            
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         [HttpPost]
         public async Task<IActionResult> PostProduct([FromBody] ProductModel model)
         {
@@ -104,6 +156,18 @@ namespace SimpleERP.Controllers.API
         }
 
         // DELETE: api/APIProducts/5
+
+        /// <summary>
+        /// Delete product by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Returns new model of warehouse</returns>
+        /// <response code="200">Returns new model of warehouse</response>
+        /// <response code="400">Invalid data</response>
+        /// <response code="404">Not found product</response>        
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct([FromRoute] int id)
         {
