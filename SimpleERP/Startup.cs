@@ -15,6 +15,7 @@ using SimpleERP.Data.Entities.Auth;
 using SimpleERP.Data.Repository;
 using SimpleERP.Helpers;
 using SimpleERP.Identity;
+using SimpleERP.Middlewares.Extensions;
 using System;
 using System.IO;
 using System.Reflection;
@@ -116,6 +117,7 @@ namespace SimpleERP
                 app.UseHsts();
             }
 
+            app.ConfigureExceptionHandler();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
