@@ -45,10 +45,6 @@ namespace SimpleERP.Identity
             {
                 identity.AddClaim(new Claim(ClaimsIdentity.DefaultRoleClaimType, string.Join(",", roles)));
             }
-            //else if (user is Client)
-            //{
-            //    roles.Add(nameof(Client));
-            //}
 
             return new ClaimsPrincipal(identity);
         }

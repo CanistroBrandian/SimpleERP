@@ -23,9 +23,11 @@ namespace SimpleERP.Tests.Integration.API
 
         protected readonly TestServer _server;
         protected readonly HttpClient _httpClient;
+        
 
         public APIBaseControllerTest()
         {
+            
             _server = new TestServer(new WebHostBuilder()
                 .UseStartup<TestStartup>()
                 .UseSetting(WebHostDefaults.ApplicationKey, typeof(Startup).GetTypeInfo().Assembly.GetName().Name));
